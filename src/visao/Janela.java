@@ -1,4 +1,4 @@
-package gui;
+package visao;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -23,40 +23,152 @@ public class Janela extends JFrame{
 		super("Simulador");
 		
 		JPanel panel = new JPanel(new GridBagLayout());
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); //para ficar expandido na horizontal
+		panel.setLayout(new GridBagLayout()); //para ficar expandido na horizontal
+		GridBagConstraints constraints = new GridBagConstraints();
 		
-		panel.add(variaveis_simulacao());
-		panel.add(controle_simulacao());
+		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		panel.add(variaveis_simulacao(), constraints);
+		
+		constraints.gridy = 1;
+		panel.add(controle_simulacao(), constraints);
+		
+		constraints.fill = GridBagConstraints.VERTICAL;
+		constraints.gridy = 0;
+		constraints.gridx = 1;
+		panel.add(estatiscas_simulacao(), constraints);
 		
 		add(panel);
 		
-
 		pack(); //tamanho da tela p/ as coisas aparecer
 		setLocationRelativeTo(null); //aparece no meio a janela
 		
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	}
+	
+	JPanel estatiscas_simulacao(){
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); //para ficar expandido na horizontal
+
+		panel.add(estatisticas_a());
+		panel.add(estatisticas_b());
+		panel.add(estatisticas_c());
+		panel.add(estatisticas_d());
+		panel.add(estatisticas_e());
 		
+		panel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(),
+				"Estatísticas da Simulação"));
+		
+		return panel;
+	}
+	
+	JPanel estatisticas_a(){
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
+	
+		JLabel a_min = new JLabel("Mínimo: ");
+		panel.add(a_min, constraints);
+		
+		JLabel a_max = new JLabel("Máximo: ");
+		constraints.gridx = 1;
+		panel.add(a_max, constraints);
+		
+		JLabel a_med = new JLabel("Média: ");
+		constraints.gridx = 2;
+		panel.add(a_med, constraints);
+		
+		panel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(),
+				"Número de Mensagens no Sistema (mínimo; máximo e média"));
+
+		return panel;
+	}
+	
+	JPanel estatisticas_b(){
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
+	
+		JLabel b_centroA = new JLabel("Centro A: ");
+		panel.add(b_centroA, constraints);
+		
+		JLabel b_centroB = new JLabel("Centro B: ");
+		constraints.gridx = 1;
+		panel.add(b_centroB, constraints);
+		
+		panel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(),
+				"Taxa Média de Ocupação dos Centros"));
+
+		return panel;
+	}
+	
+	JPanel estatisticas_c(){
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
+	
+		JLabel c_min = new JLabel("Mínimo: ");
+		panel.add(c_min, constraints);
+		
+		JLabel c_max = new JLabel("Máximo: ");
+		constraints.gridx = 1;
+		panel.add(c_max, constraints);
+		
+		JLabel c_med = new JLabel("Média: ");
+		constraints.gridx = 2;
+		panel.add(c_med, constraints);
+		
+		panel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(),
+				"Tempo de Transito das Mensagens no Sistema (mínimo; máximo e médio)"));
+
+		return panel;
+	}
+	
+	JPanel estatisticas_d(){
+		JPanel panel = new JPanel(new GridBagLayout());
+
+		JLabel mensagens = new JLabel("Mensagens: ");
+		panel.add(mensagens);
+	
+		panel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(),
+				"Contadores de Mensagens Despachadas"));
+
+		return panel;
+	}
+	
+	JPanel estatisticas_e(){
+		JPanel panel = new JPanel(new GridBagLayout());
+
+		JLabel contador = new JLabel("Contador: ");
+		panel.add(contador);
+	
+		panel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(),
+				"Contador de Mensagens por tipo"));
+
+		return panel;
 	}
 	
 	
 	JPanel controle_simulacao(){
 		JPanel panel = new JPanel(new GridBagLayout());
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS)); //para ficar expandido na horizontal
-
-		GridBagConstraints constraints = new GridBagConstraints();
-
+		
 		JButton iniciar = new JButton(" Iniciar ");
 		JButton pausar = new JButton(" Pausar ");
 		JButton continuar = new JButton("Continuar");
 		
-		constraints.weightx = 1;
-		panel.add(iniciar, constraints);
-
-		panel.add(pausar, constraints);
-
-		panel.add(continuar, constraints);
+		panel.add(iniciar);
+		panel.add(pausar);
+		panel.add(continuar);
 		
-		
+		panel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(),
+				"Controle da Simulação"));
 		return panel;
 	}
 	
@@ -350,3 +462,4 @@ public class Janela extends JFrame{
 		return panel;
 	}
 }
+

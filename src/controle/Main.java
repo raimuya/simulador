@@ -1,9 +1,8 @@
-package gui;
-
+package controle;
 
 public class Main {
+	
 	public static void main(String[] args){
-		new Janela().setVisible(true);
+		Simulador s = new Simulador(1, 1, 1);
 	}
-
 }
