@@ -1,7 +1,18 @@
 package modelo.eventos;
 
-public class EventoFracassoMensagem {
+import controle.Simulador;
+import modelo.mensagens.Mensagem;
+
+public class EventoFracassoMensagem extends Evento{
+	int fracassos;
 	
-	//TODO
+	public EventoFracassoMensagem(double inicio, Mensagem m) {
+		super(inicio, m);
+	}
+	
+	public void processa_evento(Simulador s){
+		fracassos++;
+	}
+
 
 }

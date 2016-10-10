@@ -6,71 +6,81 @@ import modelo.mensagens.Mensagem;
 
 public class EventoChegadaMensagemC1 extends Evento{ //LOCAL
 
-	public EventoChegadaMensagemC1(double inicio) {
-		super(inicio);
+	public EventoChegadaMensagemC1(double inicio, Mensagem m) {
+		super(inicio, m);
 	}
 
-	void processa_evento(Simulador s, Mensagem m){
+	public void processa_evento(Simulador s){
 		//se tem servidor livre então
 		//gerar tempo servico = processa_XL
 		//programar proxima saida = dentro do sucesso/fracasso/adiamento
 		if(s.serv_livre_local > 0){
 			s.serv_livre_local--;
 			switch(m.getDirecao()){
-			case LL:
-				processa_ll(m);
-				break;
-			case RL:
-				processa_rl(m);
-				break;
-			default:
-				break;
+			case LL: processa_ll(s); break;
+			case RL: processa_rl(s); break;
+			default: break;
 			}
-		}
-		//ir para a fila
-		//gerar tempo de chegada
-		//programar próxima chegada
-		else{
-			s.add_fila_local(m);
-			s.add_qtd_pessoas_fila_local(inicio);
-			
-			//fazer isso aqui ou numa "tabela de eventos"
-			//gerar direcao = local | remota => TEC
-			//gerar destino = direcao proporcao...
+			proximo(s);
+		} else{
+			s.add_fila_local(this);
+			s.add_qtd_pessoas_fila_local_NOW();
 		}
 	}
 
-	void processa_ll(Mensagem m) {
+	void processa_ll(Simulador s) {
+		double duracao = 0;
 		switch(m.getDesfecho()){
 		case SUCESSO:
-			m.addDuracao(Distribuicao.norm(0.55, 0.05));
-			//TODO: gerar evento sucesso
+			duracao = (Distribuicao.norm(0.55, 0.05));
+			m.addDuracao(duracao);
+			Evento lls = new EventoSucessoMensagem(s.TNOW()+duracao, m);
+			s.addEvento(lls);
 			break;
 		case FRACASSO:
-			m.addDuracao(Distribuicao.tria(0.02, 0.05, 0.12));
-			//TODO: gerar evento fracasso
+			duracao = (Distribuicao.tria(0.02, 0.05, 0.12));
+			m.addDuracao(duracao);
+			Evento llf = new EventoFracassoMensagem(s.TNOW()+duracao, m);
+			s.addEvento(llf);
 			break;
 		case ADIAMENTO:
-			m.addDuracao(Distribuicao.unif(0.06, 0.15));
-			//TODO: gerar evento adiamento
+			duracao = (Distribuicao.unif(0.06, 0.15));
+			m.addDuracao(duracao);
+			Evento lla = new EventoAdiamentoMensagem(s.TNOW()+duracao, m);
+			s.addEvento(lla);
 			break;
 		}
 	}
 	
-	void processa_rl(Mensagem m) {
+	void processa_rl(Simulador s) {
+		double duracao = 0;
 		switch(m.getDesfecho()){
 		case SUCESSO:
-			m.addDuracao(Distribuicao.unif(0.3, 0.11));
-			//TODO: gerar evento sucesso
+			duracao =(Distribuicao.unif(0.3, 0.11));
+			m.addDuracao(duracao);
+			Evento rls = new EventoSucessoMensagem(s.TNOW()+duracao, m);
+			s.addEvento(rls);
 			break;
 		case FRACASSO:
-			m.addDuracao(Distribuicao.norm(0.46, 0.05));
-			//TODO: gerar evento fracasso
+			duracao =(Distribuicao.norm(0.46, 0.05));
+			m.addDuracao(duracao);
+			Evento rlf = new EventoSucessoMensagem(s.TNOW()+duracao, m);
+			s.addEvento(rlf);
 			break;
 		case ADIAMENTO:
-			m.addDuracao(Distribuicao.norm(0.72, 0.09));
-			//TODO: gerar evento adiamento
+			duracao = (Distribuicao.norm(0.72, 0.09));
+			m.addDuracao(duracao);
+			Evento rla = new EventoAdiamentoMensagem(s.TNOW()+duracao, m);
+			s.addEvento(rla);
 			break;
 		}
 	}
+	
+	void proximo(Simulador s){
+		Evento proximo = s.proximo_fila_local();
+		if(proximo != null){
+			proximo.processa_evento(s);
+		}
+	}
+	
 }

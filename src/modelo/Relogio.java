@@ -12,11 +12,12 @@ public class Relogio {
 		return tempo;
 	}
 	
-	public void setTempo(double tempo){
-		this.tempo = tempo;
+	public void avanca(double tempo){
+		System.out.println("TEMPO: " + tempo);
+		this.tempo += tempo;
 	}
 	
 	public void reset(){
-		tempo = 0;
+		tempo = new Double("0.0");
 	}
 }

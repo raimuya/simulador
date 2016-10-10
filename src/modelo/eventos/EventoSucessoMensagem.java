@@ -1,11 +1,17 @@
 package modelo.eventos;
 
-public class EventoSucessoMensagem extends Evento {
+import controle.Simulador;
+import modelo.mensagens.Mensagem;
 
-	public EventoSucessoMensagem(double inicio) {
-		super(inicio);
+public class EventoSucessoMensagem extends Evento {
+	int sucessos;
+
+	public EventoSucessoMensagem(double inicio, Mensagem m) {
+		super(inicio, m);
 	}
 	
-	//TODO
+	public void processa_evento(Simulador s){
+		sucessos++;
+	}
 
 }

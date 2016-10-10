@@ -6,7 +6,7 @@ import modelo.eventos.Evento;
 
 public class ListaEventos {
 	
-	ArrayList<Evento> lista;
+	static ArrayList<Evento> lista;
 	int atual = 0;
 	
 	public ListaEventos() {
@@ -21,7 +21,7 @@ public class ListaEventos {
 	
 	//retorna o próximo evento eminente da lista de eventos
 	public Evento proximo(){
-		return lista.get(atual+1);
+		return lista.get(atual++);
 	}
 	
 	//retorna a quantidade de eventos na lista de eventos

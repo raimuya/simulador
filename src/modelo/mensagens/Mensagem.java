@@ -5,12 +5,18 @@ public class Mensagem {
 	private DirecaoMensagem direcao;
 	private DesfechoMensagem desfecho;
 	private double duracao;
+	String conteudo;
+	static int count;
+	
 
-	 Mensagem(DirecaoMensagem direcao, DesfechoMensagem desfecho, double duracao){
+	public Mensagem(DirecaoMensagem direcao, DesfechoMensagem desfecho){
 		this.direcao = direcao;
 		this.desfecho = desfecho;
-		this.duracao = duracao;
-	 }
+		this.duracao = 0;
+		conteudo = "\"Eu sou a mensagem " + (count++) + "\""; 
+	}
+	
+	
 	 
 	 public DirecaoMensagem getDirecao(){
 		 return direcao;
@@ -24,8 +30,16 @@ public class Mensagem {
 		 return duracao;
 	 }
 	 
+	 public String getConteudo(){
+		 return conteudo;
+	 }
+	 
 	 public void addDuracao(double duracao){
 		 this.duracao += duracao;
+	 }
+	 
+	 public String toString(){
+		 return conteudo + " " + direcao + " " + desfecho;
 	 }
 
 }
