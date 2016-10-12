@@ -1,6 +1,6 @@
 package modelo;
 
-public class Relogio {
+public final class Relogio {
 
 	double tempo;
 	
@@ -13,8 +13,7 @@ public class Relogio {
 	}
 	
 	public void avanca(double tempo){
-		System.out.println("TEMPO: " + tempo);
-		this.tempo += tempo;
+		this.tempo = tempo;
 	}
 	
 	public void reset(){

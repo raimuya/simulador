@@ -4,10 +4,9 @@ import java.util.ArrayList;
 
 import modelo.eventos.Evento;
 
-public class ListaEventos {
+public final class ListaEventos {
 	
 	static ArrayList<Evento> lista;
-	int atual = 0;
 	
 	public ListaEventos() {
 		lista = new ArrayList<Evento>();
@@ -16,16 +15,26 @@ public class ListaEventos {
 	//adiciona um novo evento a lista
 	//os eventos são adicionados em ordem de 'startTime1
 	public void add(Evento evento){
-		lista.add(evento);
+		int index = 0;
+		//toString();
+		for(Evento e : lista){
+			if(e.get_inicio() < evento.get_inicio())
+				++index;
+		}
+		lista.add(index, evento);
+		System.out.println("Adicionado na posicao LEF: " + index);
 	}
 	
 	//retorna o próximo evento eminente da lista de eventos
-	public Evento proximo(){
-		return lista.get(atual++);
+	public Evento iminente(){
+		return lista.remove(0);
 	}
-	
-	//retorna a quantidade de eventos na lista de eventos
-	public int total_eventos(){
-		return lista.size();
+
+	public String toString(){
+		String s = " --- Lista --- \n";
+		for(Evento e : lista){
+			s += e.toString();
+		}
+		return s;
 	}
 }

@@ -21,8 +21,17 @@ public class EventoAdiamentoMensagem extends Evento{
 	//das medidas de desempenho.
 	public void processa_evento(Simulador s){
 		adiadas++;
+		
+		System.out.println("**************** ADIANDO ****************  =====  TNOW: " + Simulador.TNOW());
+		System.out.println(toString());
 
-		new EventoChegadaMensagem(s.TNOW(), m);
+		new EventoChegadaMensagem(Simulador.TNOW(), m);
+	}
+
+	@Override
+	public String toString() {
+		return "Evento ADIAMENTO " + m.toString() + 
+				"\nInicio em: " + inicio;
 	}
 
 

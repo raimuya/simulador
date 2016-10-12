@@ -49,15 +49,15 @@ public class Gerador {
 	
 	public Evento gera_um_evento(){
 		Mensagem m = gera_uma_mensagem();
+		Evento e;
 		if(m.getDirecao() == DirecaoMensagem.LL || m.getDirecao() == DirecaoMensagem.LR){
-			tec_local = Distribuicao.expo(0.5);
-			System.out.println("Mensagem " + m.toString() +" criada!");
-			return new EventoChegadaMensagem(tec_local, m);
+			tec_local = Distribuicao.expo(0.5) + Simulador.TNOW();
+			e = new EventoChegadaMensagem(tec_local, m);
 		} else {
 			tec_remota = Distribuicao.expo(0.6);
-			System.out.println("Mensagem " + m.toString() +" criada!");
-			return new EventoChegadaMensagem(tec_remota, m);
+			e = new EventoChegadaMensagem(tec_remota  + Simulador.TNOW(), m);
 		}
+		return e;
 	}
 	
 	public Mensagem gera_uma_mensagem(){

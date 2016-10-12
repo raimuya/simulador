@@ -3,7 +3,8 @@ package visao;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -11,17 +12,36 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-public class Janela extends JFrame{
+import controle.Simulador;
+
+
+public final class Janela extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
+	
+	Simulador s;
+
+	JTextArea area_texto_campo_simulacao;
+	JScrollPane scroll_area_texto_simulacao;
+	
+	JButton iniciar;
+	JButton pausar;
+	JButton continuar;
 
 	public Janela(){
 		super("Simulador");
-		
+		principal();
+		s = new Simulador(1,1,1);
+	}
+	
+	void principal(){
 		JPanel panel = new JPanel(new GridBagLayout());
 		panel.setLayout(new GridBagLayout()); //para ficar expandido na horizontal
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -38,13 +58,36 @@ public class Janela extends JFrame{
 		constraints.gridx = 1;
 		panel.add(estatiscas_simulacao(), constraints);
 		
-		add(panel);
+		constraints.gridx = 2;
+		panel.add(visualizacao_simulacao());
 		
+		add(panel);
 		pack(); //tamanho da tela p/ as coisas aparecer
 		setLocationRelativeTo(null); //aparece no meio a janela
-		
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
+
+	JPanel visualizacao_simulacao(){
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
+		
+		area_texto_campo_simulacao = new JTextArea(20, 20);
+		area_texto_campo_simulacao.setEditable(false);
+		scroll_area_texto_simulacao = new JScrollPane(area_texto_campo_simulacao);
+		
+		constraints.gridwidth = GridBagConstraints.REMAINDER;
+	    constraints.fill = GridBagConstraints.BOTH;
+	    constraints.weightx = 1.0;
+	    constraints.weighty = 4.0;
+	    panel.add(scroll_area_texto_simulacao, constraints);
+		
+		panel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(),
+				"Simulação"));
+		return panel;
+	}
+	
 	
 	JPanel estatiscas_simulacao(){
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -158,9 +201,12 @@ public class Janela extends JFrame{
 	JPanel controle_simulacao(){
 		JPanel panel = new JPanel(new GridBagLayout());
 		
-		JButton iniciar = new JButton(" Iniciar ");
-		JButton pausar = new JButton(" Pausar ");
-		JButton continuar = new JButton("Continuar");
+		iniciar = new JButton(" Iniciar ");
+		iniciar.addActionListener(this);
+		pausar = new JButton(" Pausar ");
+		pausar.addActionListener(this);
+		continuar = new JButton("Continuar");
+		continuar.addActionListener(this);
 		
 		panel.add(iniciar);
 		panel.add(pausar);
@@ -461,5 +507,34 @@ public class Janela extends JFrame{
 		
 		return panel;
 	}
+
+
+	//TODO: ver como colocar os eventos printando
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(iniciar)){
+			s.iniciar(2);
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+//					while(true){
+//						if(s.mudou_evento_gerado){
+//							area_texto_campo_simulacao.append(s.temp_evento_gerado);
+//							s.mudou_evento_gerado = false;
+//						}
+//					}
+				}
+			});
+		}
+		if(e.getSource().equals(pausar)){
+		}
+		if(e.getSource().equals(continuar)){
+		}
+	
+		
+
+	 
+	}
+
 }
+
 
