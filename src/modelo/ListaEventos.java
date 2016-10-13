@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import modelo.eventos.Evento;
 
-public final class ListaEventos {
+public  class ListaEventos {
 	
 	static ArrayList<Evento> lista;
 	
@@ -14,7 +14,7 @@ public final class ListaEventos {
 	
 	//adiciona um novo evento a lista
 	//os eventos são adicionados em ordem de 'startTime1
-	public void add(Evento evento){
+	public int add(Evento evento){
 		int index = 0;
 		//toString();
 		for(Evento e : lista){
@@ -22,7 +22,7 @@ public final class ListaEventos {
 				++index;
 		}
 		lista.add(index, evento);
-		System.out.println("Adicionado na posicao LEF: " + index);
+		return index;
 	}
 	
 	//retorna o próximo evento eminente da lista de eventos

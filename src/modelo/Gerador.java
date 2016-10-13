@@ -19,31 +19,36 @@ public class Gerador {
 	
 	double tec_local, tec_remota;
 	
-	public Gerador() {
-	// ---- exemplo volume de tráfego ----
-	//direcao     | LL | LR | RL | RR
-	//proporcao   | 50 | 25 | 15 | 10
-	//acumulada   | 50 | 75 | 90 | 100
-		LL = 50;
-		LR = 75;
-		RL = 90;
-		RR = 100;
-	// ---- sucesso/fracasso/adiamento ----
-	// direcao | sucesso | fracasso | adiamento
-	//    LL   |    87   |    0.5   |   12.5
-	//    LR   |    96   |    1.5   |    2.5
-	//    RL   |    96   |    3.    |    1
-	//    RR   |    90   |    1.    |    9
-		LLS = 87;   LLF = 0.5;   LLA = 12.5;
-		LRS = 96;   LRF = 1.5;   LRA = 2.5;
-		RLS = 96;   RLF = 3;     RLA = 1;
-		RRS = 90;   RRF = 1;     RRA = 9;
+	public Gerador(double LL, double LR, double RL, double RR,
+			double LLS, double LLF, double LLA,
+			double LRS, double LRF, double LRA,
+			double RLS, double RLF, double RLA,
+			double RRS, double RRF, double RRA,
+			double tec_local, double tec_remota) {
+		// ---- exemplo volume de tráfego ----
+		//direcao     | LL | LR | RL | RR
+		//proporcao   | 50 | 25 | 15 | 10
+		//acumulada   | 50 | 75 | 90 | 100
+		this.LL = LL;
+		this.LR = LR;
+		this.RL = RL;
+		this.RR = RR;
+		// ---- sucesso/fracasso/adiamento ----
+		// direcao | sucesso | fracasso | adiamento
+		//    LL   |    87   |    0.5   |   12.5
+		//    LR   |    96   |    1.5   |    2.5
+		//    RL   |    96   |    3.    |    1
+		//    RR   |    90   |    1.    |    9
+		this.LLS = LLS;   this.LLF = LLF;   this.LLA = LLA;
+		this.LRS = LRS;   this.LRF = LRF;   this.LRA = LRA;
+		this.RLS = RLS;   this.RLF = RLF;   this.RLA = RLA;
+		this.RRS = RRS;   this.RRF = RRF;   this.RRA = RRA;
 		
-	// origem |    TEC
-	// local  | EXPO (0.5)
-	// remota | EXPO (0.6)
-		tec_local = Distribuicao.expo(0.5);
-		tec_remota = Distribuicao.expo(0.6);
+		// origem |    TEC
+		// local  | EXPO (0.5)
+		// remota | EXPO (0.6)
+		this.tec_local = Distribuicao.expo(tec_local);
+		this.tec_remota = Distribuicao.expo(tec_remota);
 	}
 
 	

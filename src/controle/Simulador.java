@@ -2,6 +2,8 @@ package controle;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,8 +11,11 @@ import modelo.Gerador;
 import modelo.ListaEventos;
 import modelo.Relogio;
 import modelo.eventos.Evento;
+import visao.Janela;
 
-public final class Simulador {
+public class Simulador{
+	
+	Janela janela;
 
 	Queue<Evento> fila_recepcao;
 	public int serv_livre_recepcao; //servidores livres
@@ -30,11 +35,14 @@ public final class Simulador {
 	static ListaEventos listaEventos;
 	
 	static Relogio t  = new Relogio(0.0);
+	DecimalFormat dois_digitos = new DecimalFormat("#######.##");
 	
 	Gerador g;
 	
-	public Simulador (int serv_total_local, int serv_total_remoto,
-			int serv_total_recepcao){
+	public Simulador (Janela j, int serv_total_local, int serv_total_remoto,
+			int serv_total_recepcao) throws InterruptedException{
+		
+		this.janela = j;
 		
 		fila_recepcao = new LinkedList<Evento>();
 		this.serv_total_recepcao = serv_total_recepcao;
@@ -53,7 +61,10 @@ public final class Simulador {
 		
 		listaEventos = new ListaEventos();
 		
-		g = new Gerador();
+		while(janela.iniciar.isEnabled())
+			atualiza_total();
+		
+		iniciar();
 	}
 	
 	public void add_fila_local(Evento e){
@@ -86,6 +97,36 @@ public final class Simulador {
 	}
 	
 
+	public void gerador_init(){
+		g = new Gerador(
+				(double) janela.spinner_ll.getValue(), (double) janela.spinner_lr.getValue(),
+				(double) janela.spinner_lr.getValue(), (double) janela.spinner_rr.getValue(),
+				(double) janela.spinner_lls.getValue(), (double) janela.spinner_llf.getValue(), (double) janela.spinner_lla.getValue(),
+				(double) janela.spinner_lrs.getValue(), (double) janela.spinner_lrf.getValue(), (double) janela.spinner_lra.getValue(),
+				(double) janela.spinner_rls.getValue(), (double) janela.spinner_rlf.getValue(), (double) janela.spinner_rla.getValue(),
+				(double) janela.spinner_rrs.getValue(), (double) janela.spinner_rrf.getValue(), (double) janela.spinner_rra.getValue(),
+				(double) janela.spinner_tec_local.getValue(), (double) janela.spinner_tec_remota.getValue());
+	}
+	
+	public void atualiza_total(){
+		double ll = (double) janela.spinner_lls.getValue() +
+					(double) janela.spinner_llf.getValue() +
+					(double) janela.spinner_lla.getValue();
+		double lr = (double) janela.spinner_lrs.getValue() +
+					(double) janela.spinner_lrf.getValue() +
+					(double) janela.spinner_lra.getValue();
+		double rl = (double) janela.spinner_rls.getValue() +
+					(double) janela.spinner_rlf.getValue() +
+					(double) janela.spinner_rla.getValue();
+		double rr = (double) janela.spinner_rrs.getValue() +
+					(double) janela.spinner_rrf.getValue() +
+					(double) janela.spinner_rra.getValue();
+		double dr = (double) janela.spinner_ll.getValue() + 
+					(double) janela.spinner_lr.getValue() +
+					(double) janela.spinner_rl.getValue() +
+					(double) janela.spinner_rr.getValue();
+		janela.atualiza_total_propocoes(dr, ll, lr, rl, rr);
+	}
 	
 	public Evento proximo_fila_remoto(){
 		msgXtempo_fila_remoto.put(TNOW(), fila_destino_remoto.size());
@@ -98,8 +139,8 @@ public final class Simulador {
 	}
 	
 	//adiciona um novo evento a lista de eventos e manda a UI adiciona-lo também em sua JList
-	public static void addEvento(Evento evento){
-		listaEventos.add(evento);
+	public static int addEvento(Evento evento){
+		return listaEventos.add(evento);
 	}
 	
 	public static Double TNOW(){
@@ -111,22 +152,28 @@ public final class Simulador {
 //		
 //	}
 	
-	public String temp_evento_gerado;
-	public boolean mudou_evento_gerado;
-	public String temp_evento_processado;
-	public boolean mudou_evento_processado;
-	//TODO: inicia a simulação
-	public void iniciar(double tempo_simulacao){
+	
+	public void iniciar() throws InterruptedException{
+		double tempo_simulacao = (double) janela.spinner_tempo_simulacao_segundos.getValue();
+		//inicia gerador
+		gerador_init();
 		//inicializacao: geracao de um evento inicial
 		Evento e = g.gera_um_evento();
-		addEvento(e);
+		janela.area_texto_campo_simulacao.append("EVENTO CRIADO ÀS " + dois_digitos.format(Simulador.TNOW()) + "\n");
+		janela.area_texto_campo_simulacao.append(e.toString());
+		int pos = addEvento(e);
+		System.out.println("Adicionado na posicao LEF: " + pos);
+		janela.area_texto_campo_simulacao.append("\nAdicionado na posicao LEF: " + pos + "\n\n");
 	
 		while(TNOW() < tempo_simulacao){
-			Evento iminente = avanco_tempo();
-			
-			proximo_evento(iminente);
-			
+			if(janela.pausar.isEnabled()){
+				TimeUnit.SECONDS.sleep((TNOW().longValue()));
+				Evento iminente = avanco_tempo();
+				
+				proximo_evento(iminente);
+			}
 		}
+		janela.pausar.setEnabled(false);
 	}
 	
 	Evento avanco_tempo(){
@@ -142,21 +189,18 @@ public final class Simulador {
 	void proximo_evento(Evento iminente){
 		//execute o evento iminente
 		//System.out.println("IMINENTE: " + iminente.toString());
-		temp_evento_processado = iminente.toString();
-		mudou_evento_processado = true;
-		
+
 		iminente.processa_evento(this);
 		
 		//gere futuros eventos
 		Evento e = g.gera_um_evento();
-		
-		temp_evento_gerado = e.toString();
-		mudou_evento_gerado = true;
-		
+		janela.area_texto_campo_simulacao.append("EVENTO CRIADO ÀS " + dois_digitos.format(Simulador.TNOW()) + "\n");
+		janela.area_texto_campo_simulacao.append(e.toString());
+
 		//adicione na LEF na POSICAO CORRETA
-		addEvento(e);
-		
-		
+		int pos = addEvento(e);
+		//System.out.println("Adicionado na posicao LEF: " + pos);
+		janela.area_texto_campo_simulacao.append("\nAdicionado na posicao LEF: " + pos + "\n\n");
 	}
 
 	public Queue<Evento> get_fila_recepcao(){
