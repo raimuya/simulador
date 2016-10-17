@@ -11,14 +11,22 @@ public class EventoFracassoMensagem extends Evento{
 	}
 	
 	public void processa_evento(Simulador s){
-		System.out.println("FRACASSANDO   =====  TNOW: " + Simulador.TNOW());
-		System.out.println(toString());
 		fracassos++;
+		
+		m.add_tempo_no_sistema(s.TNOW() - inicio);
+		s.atualiza_qtd_mensagens_sistema(false, true);
+		
+		s.atualiza_area_simulacao("\nFRACASSANDO ÀS " + Simulador.TNOW_STRING() + "\n");
+		s.atualiza_area_simulacao(toStringProcessando() + "\n\n");
 	}
 
 	@Override
 	public String toString() {
 		return "Evento FRACASSO" + m.toString() + 
-				"\nInicio em: " + inicio;
+				"\nInicia em: " + get_inicio_STRING();
+	}
+	
+	public String toStringProcessando() {
+		return "Evento FRACASSO" + m.toString(); 
 	}
 }

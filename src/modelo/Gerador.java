@@ -4,6 +4,8 @@ import controle.Simulador;
 import modelo.distribuicoes.Distribuicao;
 import modelo.eventos.Evento;
 import modelo.eventos.EventoChegadaMensagem;
+import modelo.eventos.EventoChegadaMensagemC1;
+import modelo.eventos.EventoChegadaMensagemC2;
 import modelo.mensagens.DesfechoMensagem;
 import modelo.mensagens.DirecaoMensagem;
 import modelo.mensagens.Mensagem;
@@ -30,19 +32,19 @@ public class Gerador {
 		//proporcao   | 50 | 25 | 15 | 10
 		//acumulada   | 50 | 75 | 90 | 100
 		this.LL = LL;
-		this.LR = LR;
-		this.RL = RL;
-		this.RR = RR;
+		this.LR = LR+LL;
+		this.RL = RL+LR;
+		this.RR = RR+RL;
 		// ---- sucesso/fracasso/adiamento ----
 		// direcao | sucesso | fracasso | adiamento
 		//    LL   |    87   |    0.5   |   12.5
 		//    LR   |    96   |    1.5   |    2.5
 		//    RL   |    96   |    3.    |    1
 		//    RR   |    90   |    1.    |    9
-		this.LLS = LLS;   this.LLF = LLF;   this.LLA = LLA;
-		this.LRS = LRS;   this.LRF = LRF;   this.LRA = LRA;
-		this.RLS = RLS;   this.RLF = RLF;   this.RLA = RLA;
-		this.RRS = RRS;   this.RRF = RRF;   this.RRA = RRA;
+		this.LLS = LLS;   this.LLF = LLF+LLS;   this.LLA = LLA+LLF;
+		this.LRS = LRS;   this.LRF = LRF+LRS;   this.LRA = LRA+LRF;
+		this.RLS = RLS;   this.RLF = RLF+RLS;   this.RLA = RLA+RLF;
+		this.RRS = RRS;   this.RRF = RRF+RRS;   this.RRA = RRA+RRF;
 		
 		// origem |    TEC
 		// local  | EXPO (0.5)
@@ -62,6 +64,19 @@ public class Gerador {
 			tec_remota = Distribuicao.expo(0.6);
 			e = new EventoChegadaMensagem(tec_remota  + Simulador.TNOW(), m);
 		}
+		return e;
+	}
+	
+	public Evento gera_um_evento_apos_adiamento(Mensagem m){
+		Evento e;
+		
+		DirecaoMensagem direcao_m = m.getDirecao();
+		m.setDesfecho(gera_desfecho_mensagem(direcao_m));
+		
+		if(direcao_m == DirecaoMensagem.LL || direcao_m == DirecaoMensagem.LR)
+			e = new EventoChegadaMensagemC1(m.get_tempo_no_sistema()+Simulador.TNOW(), m);
+		else
+			e = new EventoChegadaMensagemC2(m.get_tempo_no_sistema()+Simulador.TNOW(), m);
 		return e;
 	}
 	
@@ -92,35 +107,35 @@ public class Gerador {
 		switch (dir){
 		case LL:
 			if(prop_desf < LLS)
-				desf = DesfechoMensagem.SUCESSO;
+				desf = DesfechoMensagem.S;
 			else if(prop_desf < LLF)
-				desf = DesfechoMensagem.FRACASSO;
+				desf = DesfechoMensagem.F;
 			else
-				desf = DesfechoMensagem.ADIAMENTO;
+				desf = DesfechoMensagem.A;
 			break;
 		case LR:
 			if(prop_desf < LRS)
-				desf = DesfechoMensagem.SUCESSO;
+				desf = DesfechoMensagem.S;
 			else if(prop_desf < LRF)
-				desf = DesfechoMensagem.FRACASSO;
+				desf = DesfechoMensagem.F;
 			else
-				desf = DesfechoMensagem.ADIAMENTO;
+				desf = DesfechoMensagem.A;
 			break;
 		case RL:
 			if(prop_desf < RLS)
-				desf = DesfechoMensagem.SUCESSO;
+				desf = DesfechoMensagem.S;
 			else if(prop_desf < RLF)
-				desf = DesfechoMensagem.FRACASSO;
+				desf = DesfechoMensagem.F;
 			else
-				desf = DesfechoMensagem.ADIAMENTO;
+				desf = DesfechoMensagem.A;
 			break;
 		case RR:
 			if(prop_desf < RRS)
-				desf = DesfechoMensagem.SUCESSO;
+				desf = DesfechoMensagem.S;
 			else if(prop_desf < RRF)
-				desf = DesfechoMensagem.FRACASSO;
+				desf = DesfechoMensagem.F;
 			else
-				desf = DesfechoMensagem.ADIAMENTO;
+				desf = DesfechoMensagem.A;
 			break;
 		}
 	return desf;

@@ -6,7 +6,7 @@ public enum DesfechoMensagem {
 	//LR = Local -> Remoto
 	//RL = Remoto -> Local
 	//RR = Remoto -> Remoto
-	SUCESSO, FRACASSO, ADIAMENTO;
+	S, F, A;
 		
 	//retorna um array contendo as constantes do enum
 	public static DesfechoMensagem[] valores(){

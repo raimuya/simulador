@@ -11,15 +11,23 @@ public class EventoSucessoMensagem extends Evento {
 	}
 	
 	public void processa_evento(Simulador s){
-		System.out.println(" **************** ENTREGANDO ****************  =====  TNOW: " + Simulador.TNOW());
-		System.out.println(toString());
 		sucessos++;
+		
+		m.add_tempo_no_sistema(s.TNOW() - inicio);
+		s.atualiza_qtd_mensagens_sistema(false, true);
+		
+		s.atualiza_area_simulacao("ENTREGANDO ÀS " + Simulador.TNOW_STRING() + "\n");
+		s.atualiza_area_simulacao(toStringProcessando() + "\n\n");
 	}
 
 	@Override
 	public String toString() {
 		return "Evento SUCESSO" + m.toString() + 
-				"\nInicio em: " + inicio;
+				"\nInicia em: " + get_inicio_STRING();
+	}
+	
+	public String toStringProcessando() {
+		return "Evento SUCESSO" + m.toString(); 
 	}
 
 }

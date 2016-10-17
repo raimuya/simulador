@@ -5,7 +5,6 @@ public class Mensagem {
 	DirecaoMensagem direcao;
 	DesfechoMensagem desfecho;
 	double tempo_no_sistema;
-	double tempo_na_fila; 
 	String conteudo;
 	static int contador_mensagens;
 
@@ -13,7 +12,6 @@ public class Mensagem {
 		this.direcao = direcao;
 		this.desfecho = desfecho;
 		this.tempo_no_sistema = 0;
-		this.tempo_na_fila = 0;
 		conteudo = "\"Mensagem " + (contador_mensagens++) + "\""; 
 	}
 	
@@ -24,8 +22,13 @@ public class Mensagem {
 	public DesfechoMensagem getDesfecho(){
 		return desfecho;
 	}
+	
+	//para o caso de antes ser ADIADA e agora ter um novo desfecho
+	public void setDesfecho(DesfechoMensagem desfecho){
+		this.desfecho = desfecho;
+	}
 	 
-	double getDuracao(){
+	public double get_tempo_no_sistema(){
 		return tempo_no_sistema;
 	}
 	 
@@ -33,11 +36,19 @@ public class Mensagem {
 		return conteudo;
 	}
 	
+	public static void init(){
+		contador_mensagens = 0;
+	}
+	
 	public void add_tempo_no_sistema(double tempo_no_sistema){
 		this.tempo_no_sistema += tempo_no_sistema;
 	}
 	 
 	public String toString(){
-		return "| " + conteudo + " | " + direcao + " | " + desfecho + " | Tempo na fila: " + tempo_na_fila;
+		return "| " + conteudo + " | Tipo: " + direcao + desfecho;
+	}
+	
+	public String toStringProcessando(){
+		return "| " + conteudo + " | Tipo: " + direcao + desfecho;
 	}
 }

@@ -22,16 +22,24 @@ public class EventoAdiamentoMensagem extends Evento{
 	public void processa_evento(Simulador s){
 		adiadas++;
 		
-		System.out.println("**************** ADIANDO ****************  =====  TNOW: " + Simulador.TNOW());
-		System.out.println(toString());
+		m.add_tempo_no_sistema(s.TNOW() - inicio);
+		
+		s.atualiza_area_simulacao("\nADIANDO ÀS " + Simulador.TNOW_STRING() + "\n");
+		s.atualiza_area_simulacao(toString());
 
-		new EventoChegadaMensagem(Simulador.TNOW(), m);
+		Evento e = s.get_gerador().gera_um_evento_apos_adiamento(this.m);
+		int pos = Simulador.addEvento(e);
+		
+//		s.atualiza_area_simulacao("EVENTO CRIADO ÀS " + Simulador.TNOW_STRING() + "\n");
+//		s.atualiza_area_simulacao(e.toString());
+//		s.atualiza_area_simulacao("\nAdicionado na posicao LEF: " + pos + "\n\n");
+		
 	}
 
 	@Override
 	public String toString() {
 		return "Evento ADIAMENTO " + m.toString() + 
-				"\nInicio em: " + inicio;
+				"\nInicia em: " + get_inicio_STRING();
 	}
 
 

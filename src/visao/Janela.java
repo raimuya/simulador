@@ -38,7 +38,9 @@ public class Janela extends JFrame implements ActionListener {
 	//TECs
 	public JSpinner spinner_tec_local, spinner_tec_remota;
 	
+	//outras
 	public JSpinner spinner_tempo_simulacao_segundos;
+	public JSpinner spinner_servidor_recepcao, spinner_servidor_C1, spinner_servidor_C2;
 	
 	//controle simulacao
 	public JButton iniciar, pausar, continuar;
@@ -46,7 +48,17 @@ public class Janela extends JFrame implements ActionListener {
 	//area simulacao
 	public JTextArea area_texto_campo_simulacao;
 	public JScrollPane scroll_area_texto_simulacao;
-		
+	
+	//estatísticas
+	public JLabel minimo_mensagens, maximo_mensagens, media_mensagens;
+	public JLabel media_RECEPCAO, media_C1, media_C2;
+	public JLabel tempo_transito_minimo, tempo_transito_maximo, tempo_transito_media;
+	public JLabel mensagens_despachadas;
+	public JLabel contador_LLS, contador_LRF, contador_LRS;
+	public JLabel contador_LLA, contador_LLF, contador_LRA;
+	public JLabel contador_RLS, contador_RLF, contador_RLA;
+	public JLabel contador_RRS, contador_RRF, contador_RRA;
+	
 	public void atualiza_total_propocoes(double direcoes_tot,
 			double ll_tot, double lr_tot, double rl_tot, double rr_tot){
 		direcoes_total.setText(String.valueOf(direcoes_tot));
@@ -74,7 +86,6 @@ public class Janela extends JFrame implements ActionListener {
 		//constraints.fill = GridBagConstraints.VERTICAL;
 		constraints.gridy = 0;
 		constraints.gridx = 1;
-		
 		
 		constraints.gridx = 2;
 		panel.add(estatiscas_simulacao(), constraints);
@@ -132,17 +143,30 @@ public class Janela extends JFrame implements ActionListener {
 		JLabel a_min = new JLabel("Mínimo: ");
 		panel.add(a_min, constraints);
 		
-		JLabel a_max = new JLabel("Máximo: ");
+		minimo_mensagens = new JLabel("   --   ");
 		constraints.gridx = 1;
+		panel.add(minimo_mensagens, constraints);
+		
+		JLabel a_max = new JLabel("Máximo: ");
+		constraints.gridx = 2;
 		panel.add(a_max, constraints);
 		
+		maximo_mensagens =  new JLabel("   --   ");
+		constraints.gridx = 3;
+		panel.add(maximo_mensagens, constraints);
+		
 		JLabel a_med = new JLabel("Média: ");
-		constraints.gridx = 2;
+		constraints.gridx = 4;
 		panel.add(a_med, constraints);
+		
+		media_mensagens =  new JLabel("   --   ");
+		constraints.gridx = 5;
+		panel.add(media_mensagens, constraints);
+		
 		
 		panel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(),
-				"Número de Mensagens no Sistema (mínimo; máximo e média"));
+				"Número de Mensagens no Sistema"));
 
 		return panel;
 	}
@@ -151,13 +175,23 @@ public class Janela extends JFrame implements ActionListener {
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
-	
-		JLabel b_centroA = new JLabel("Centro A: ");
-		panel.add(b_centroA, constraints);
 		
-		JLabel b_centroB = new JLabel("Centro B: ");
+		panel.add(new JLabel("Centro Recepção: "));
+		media_RECEPCAO = new JLabel("  --  ");
 		constraints.gridx = 1;
-		panel.add(b_centroB, constraints);
+		panel.add(media_RECEPCAO, constraints);
+	
+		constraints.gridx = 2;
+		panel.add(new JLabel("Centro C1: "), constraints);
+		media_C1 =  new JLabel("   --   ");
+		constraints.gridx = 3;
+		panel.add(media_C1, constraints);
+		
+		constraints.gridx = 4;
+		panel.add(new JLabel("Centro C2: "), constraints);
+		media_C2 =  new JLabel("   --   ");
+		constraints.gridx = 5;
+		panel.add(media_C2, constraints);
 		
 		panel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(),
@@ -174,17 +208,29 @@ public class Janela extends JFrame implements ActionListener {
 		JLabel c_min = new JLabel("Mínimo: ");
 		panel.add(c_min, constraints);
 		
-		JLabel c_max = new JLabel("Máximo: ");
+		tempo_transito_minimo = new JLabel("   --   ");
 		constraints.gridx = 1;
+		panel.add(tempo_transito_minimo, constraints);
+		
+		JLabel c_max = new JLabel("Máximo: ");
+		constraints.gridx = 2;
 		panel.add(c_max, constraints);
 		
+		tempo_transito_maximo = new JLabel("   --   ");
+		constraints.gridx = 3;
+		panel.add(tempo_transito_maximo, constraints);
+		
 		JLabel c_med = new JLabel("Média: ");
-		constraints.gridx = 2;
+		constraints.gridx = 4;
 		panel.add(c_med, constraints);
+		
+		tempo_transito_media = new JLabel("   --   ");
+		constraints.gridx = 5;
+		panel.add(tempo_transito_media, constraints);
 		
 		panel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(),
-				"Tempo de Transito das Mensagens no Sistema (mínimo; máximo e médio)"));
+				"Tempo de Transito das Mensagens no Sistema"));
 
 		return panel;
 	}
@@ -192,9 +238,12 @@ public class Janela extends JFrame implements ActionListener {
 	JPanel estatisticas_d(){
 		JPanel panel = new JPanel(new GridBagLayout());
 
-		JLabel mensagens = new JLabel("Mensagens: ");
+		JLabel mensagens = new JLabel("Total mensagens: ");
 		panel.add(mensagens);
 	
+		mensagens_despachadas = new JLabel("   --   ");
+		panel.add(mensagens_despachadas);
+		
 		panel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(),
 				"Contadores de Mensagens Despachadas"));
@@ -204,10 +253,107 @@ public class Janela extends JFrame implements ActionListener {
 	
 	JPanel estatisticas_e(){
 		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
+		
+		JLabel lls = new JLabel("Contador LLS: ");
+		panel.add(lls);
+		
+		contador_LLS = new JLabel("   --    ");
+		constraints.gridx = 1;
+		panel.add(contador_LLS, constraints);
+		
+		JLabel llf = new JLabel("Contador LLF: ");
+		constraints.gridx = 2;
+		panel.add(llf, constraints);
+		
+		contador_LLF = new JLabel("   --    ");
+		constraints.gridx = 3;
+		panel.add(contador_LLF, constraints);
+		
+		JLabel lla = new JLabel("Contador LLA: ");
+		constraints.gridx = 4;
+		panel.add(lla, constraints);
+		
+		contador_LLA = new JLabel("   --    ");
+		constraints.gridx = 5;
+		panel.add(contador_LLA, constraints);
+		
+		JLabel lrs = new JLabel("Contador LRS: ");
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		panel.add(lrs, constraints);
+		
+		contador_LRS = new JLabel("   --    ");
+		constraints.gridx = 1;
+		panel.add(contador_LRS, constraints);
+		
+		JLabel lrf = new JLabel("Contador LRF: ");
+		constraints.gridx = 2;
+		panel.add(lrf, constraints);
+		
+		contador_LRF = new JLabel("   --    ");
+		constraints.gridx = 3;
+		panel.add(contador_LRF, constraints);
+		
+		JLabel lra = new JLabel("Contador LRA: ");
+		constraints.gridx = 4;
+		panel.add(lra, constraints);
+		
+		contador_LRA = new JLabel("   --    ");
+		constraints.gridx = 5;
+		panel.add(contador_LRA, constraints);
+		
+		JLabel rls = new JLabel("Contador RLS: ");
+		constraints.gridx = 0;
+		constraints.gridy = 2;
+		panel.add(rls, constraints);
+		
+		contador_RLS = new JLabel("   --    ");
+		constraints.gridx = 1;
+		panel.add(contador_RLS, constraints);
+		
+		JLabel rlf = new JLabel("Contador RLF: ");
+		constraints.gridx = 2;
+		panel.add(rlf, constraints);
+		
+		contador_RLF = new JLabel("   --    ");
+		constraints.gridx = 3;
+		panel.add(contador_RLF, constraints);
+		
+		JLabel rla = new JLabel("Contador RLA: ");
+		constraints.gridx = 4;
+		panel.add(rla, constraints);
+		
+		contador_RLA = new JLabel("   --    ");
+		constraints.gridx = 5;
+		panel.add(contador_RLA, constraints);
+		
+		JLabel rrs = new JLabel("Contador RRS: ");
+		constraints.gridx = 0;
+		constraints.gridy = 3;
+		panel.add(rrs, constraints);
+		
+		contador_RRS = new JLabel("   --    ");
+		constraints.gridx = 1;
+		panel.add(contador_RRS, constraints);
+		
+		JLabel rrf = new JLabel("Contador RRF: ");
+		constraints.gridx = 2;
+		panel.add(rrf, constraints);
+		
+		contador_RRF = new JLabel("   --    ");
+		constraints.gridx = 3;
+		panel.add(contador_RRF, constraints);
+		
+		JLabel rra = new JLabel("Contador RRA: ");
+		constraints.gridx = 4;
+		panel.add(rra, constraints);
 
-		JLabel contador = new JLabel("Contador: ");
-		panel.add(contador);
-	
+		contador_RRA = new JLabel("   --    ");
+		constraints.gridx = 5;
+		panel.add(contador_RRA, constraints);
+		
 		panel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(),
 				"Contador de Mensagens por tipo"));
@@ -234,7 +380,7 @@ public class Janela extends JFrame implements ActionListener {
 		panel.add(pausar, constraints);
 		panel.add(continuar, constraints);
 		
-		area_texto_campo_simulacao = new JTextArea(24, 30);
+		area_texto_campo_simulacao = new JTextArea(27, 30);
 		area_texto_campo_simulacao.setEditable(false);
 		scroll_area_texto_simulacao = new JScrollPane(area_texto_campo_simulacao);
 		constraints.gridx = 0;
@@ -271,6 +417,33 @@ public class Janela extends JFrame implements ActionListener {
 		spinner_tempo_simulacao_segundos.setEditor(new JSpinner.NumberEditor(spinner_tempo_simulacao_segundos, "#,##0.###"));
 		constraints.gridx = 1;
 		panel.add(spinner_tempo_simulacao_segundos, constraints);
+		
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		panel.add(new JLabel("Número de servidores na recepção:"), constraints);
+		
+		spinner_servidor_recepcao = new JSpinner(new SpinnerNumberModel(2, 0, 100, 1));
+		spinner_servidor_recepcao.setEditor(new JSpinner.NumberEditor(spinner_servidor_recepcao));
+		constraints.gridx = 1;
+		panel.add(spinner_servidor_recepcao, constraints);
+		
+		constraints.gridx = 0;
+		constraints.gridy = 2;
+		panel.add(new JLabel("Número de servidores em C1:"), constraints);
+		
+		spinner_servidor_C1 = new JSpinner(new SpinnerNumberModel(2, 0, 100, 1));
+		spinner_servidor_C1.setEditor(new JSpinner.NumberEditor(spinner_servidor_C1));
+		constraints.gridx = 1;
+		panel.add(spinner_servidor_C1, constraints);
+		
+		constraints.gridx = 0;
+		constraints.gridy = 3;
+		panel.add(new JLabel("Número de servidores em C2:"), constraints);
+		
+		spinner_servidor_C2 = new JSpinner(new SpinnerNumberModel(2, 0, 100, 1));
+		spinner_servidor_C2.setEditor(new JSpinner.NumberEditor(spinner_servidor_C2));
+		constraints.gridx = 1;
+		panel.add(spinner_servidor_C2, constraints);
 		
 		panel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(), "Tempo"));
@@ -448,7 +621,7 @@ public class Janela extends JFrame implements ActionListener {
 		constraints.gridx = 2;
 		panel.add(spinner_lr, constraints);
 		
-		spinner_rl = new JSpinner(new SpinnerNumberModel(15., 0, 100, 1));
+		spinner_rl = new JSpinner(new SpinnerNumberModel(20., 0, 100, 1));
 		spinner_rl.setEditor(new JSpinner.NumberEditor(spinner_rl, "#,##0.###"));
 		constraints.gridx = 3;
 		panel.add(spinner_rl, constraints);
