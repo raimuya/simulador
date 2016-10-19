@@ -5,14 +5,20 @@ import modelo.mensagens.Mensagem;
 
 public class EventoChegadaMensagem extends Evento{
 
+	/**
+	 * Construtor de evento de chegada no Centro 1.
+	 * @param inicio	horário em que este evento deve acontecer.
+	 * @param m			mensagem que deve ir para o Centro 1 (destinos locais).
+	 */
 	public EventoChegadaMensagem(double inicio, Mensagem m) {
 		super(inicio, m);
 	}
 	
-	//dúvida:
-	/*se eu tenho 3 filas (recepcao, c1, c2)
-	 * após despachar da recepcao eu gero uma nova mensagem ja?
-	 * ou ela é gerado somente após passar pelo c1, ter seu resultado concluido?
+	/**
+	 * Processamento de um evento de chegada de mensagem ao Centro de Recepção.
+	 * Após passar pela recepção, a mensagem é enviada a um dos Centros de Serviço,
+	 *  de acordo com seu destino. Assim, todas as mensagens com destino local
+	 *  são processadas no Centro de Serviço 1 e as com destino remoto vão ao Centro 2
 	 */
 	public void processa_evento(Simulador s){
 		int pos = 0;
@@ -89,7 +95,7 @@ public class EventoChegadaMensagem extends Evento{
 		}
 		s.add_fila_recepcao(this);
 	}
-		m.add_tempo_no_sistema(s.TNOW() - inicio);
+		m.add_tempo_no_sistema(Simulador.TNOW() - inicio);
 		s.serv_livre_recepcao++;
 		s.atualiza_ocupacao_recepcao_NOW();
 	}

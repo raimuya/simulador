@@ -6,10 +6,24 @@ import modelo.mensagens.Mensagem;
 
 public class EventoChegadaMensagemC1 extends Evento{ //LOCAL
 
+	/**
+	 * Construtor de evento de chegada no Centro 1.
+	 * @param inicio	horário em que este evento deve acontecer.
+	 * @param m			mensagem que deve ir para o Centro 1 (destinos locais).
+	 */
 	public EventoChegadaMensagemC1(double inicio, Mensagem m) {
 		super(inicio, m);
 	}
 
+	/**
+	 * Processamento de um evento de chegada de mensagem ao Centro 1 (destino local).
+	 * As mensagens processadas podem resultar na ocorrência de um sucesso,
+	 * caso que corresponde à entrega ao destinatário.
+	 * Podem, também, resultar em fracasso, caso em que a mensagem é devolvida ao remetente.
+	 * Existem ainda situações em que uma mensagem adia sua saída do sistema,
+	 * elas retornam para um novo processamento após um tempo de espera que depende
+	 * de quanto tempo já transcorreu desde sua entrada no sistema
+	 */
 	public void processa_evento(Simulador s){
 		//se tem servidor livre então
 		//gerar tempo servico = processa_XL
@@ -32,7 +46,7 @@ public class EventoChegadaMensagemC1 extends Evento{ //LOCAL
 			}
 			s.add_fila_local(this);
 		}
-		m.add_tempo_no_sistema(s.TNOW() - inicio);
+		m.add_tempo_no_sistema(Simulador.TNOW() - inicio);
 		s.serv_livre_local++;
 		s.atualiza_ocupacao_C1_NOW();
 	}

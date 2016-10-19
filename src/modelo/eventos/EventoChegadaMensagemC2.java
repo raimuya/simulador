@@ -6,10 +6,24 @@ import modelo.mensagens.Mensagem;
 
 public class EventoChegadaMensagemC2 extends Evento{ //REMOTO
 
+	/**
+	 * Construtor de evento de chegada no Centro 2.
+	 * @param inicio	horário em que este evento deve acontecer.
+	 * @param m			mensagem que deve ir para o Centro 2 (destinos remotos).
+	 */
 	public EventoChegadaMensagemC2(double inicio, Mensagem m) {
 		super(inicio, m);
 	}
 
+	/**
+	 * Processamento de um evento de chegada de mensagem ao Centro 1 (destino local).
+	 * As mensagens processadas podem resultar na ocorrência de um sucesso,
+	 * caso que corresponde à entrega ao destinatário.
+	 * Podem, também, resultar em fracasso, caso em que a mensagem é devolvida ao remetente.
+	 * Existem ainda situações em que uma mensagem adia sua saída do sistema,
+	 * elas retornam para um novo processamento após um tempo de espera que depende
+	 * de quanto tempo já transcorreu desde sua entrada no sistema
+	 */
 	public void processa_evento(Simulador s){
 		//se tem servidor livre então
 		//gerar tempo servico = processa_XR

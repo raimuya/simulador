@@ -3,6 +3,7 @@ package controle;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import java.text.DecimalFormat;
@@ -50,6 +51,21 @@ public class Simulador{
 	Map<Double, Integer> ocupacaoXtempo_C1;
 	Map<Double, Integer> ocupacaoXtempo_C2;
 	
+	//c
+	double duracao_min;
+	double duracao_max;
+	double duracao_media;
+	TreeSet<Double> duracoes;
+	
+	//d
+	public static int total_mensagens_despachadas;
+	
+	//e
+	public static int total_LLS, total_LLF, total_LLA;
+	public static int total_LRS, total_LRF, total_LRA;
+	public static int total_RLS, total_RLF, total_RLA;
+	public static int total_RRS, total_RRF, total_RRA;
+	
 	public Simulador (Janela j, int serv_total_local, int serv_total_remoto,
 			int serv_total_recepcao) throws InterruptedException{
 		
@@ -76,6 +92,22 @@ public class Simulador{
 		ocupacaoXtempo_C1.put(0.0, 0);
 		ocupacaoXtempo_C2 = new HashMap<Double, Integer>();
 		ocupacaoXtempo_C2.put(0.0, 0);
+		
+		//C
+		duracao_min = 0.;
+		duracao_max = 0.;
+		duracao_media = 0.;
+		duracoes = new TreeSet<Double>();
+		
+		//D
+		total_mensagens_despachadas = 0;
+		
+		//E
+		total_LLS = 0; total_LLF = 0; total_LLA = 0;
+		total_LRS = 0; total_LRF = 0; total_LRA = 0;
+		total_RLS = 0; total_RLF = 0; total_RLA = 0;
+		total_RRS = 0; total_RRF = 0; total_RRA = 0;
+			
 	}
 	
 	public void atualiza_qtd_mensagens_sistema(boolean entrando, boolean saindo){
@@ -91,6 +123,10 @@ public class Simulador{
 			numero_atual_mensagens_sistema--;
 			mensagemXtempo_no_sistema.put(TNOW(), numero_atual_mensagens_sistema);
 		}
+	}
+	
+	public void adiciona_duracao_mensagem(Mensagem m){
+		duracoes.add(m.get_tempo_no_sistema());
 	}
 	
 	public void add_fila_local(Evento e){
@@ -177,31 +213,47 @@ public class Simulador{
 		return tres_digitos.format(t.getTempo());
 	}
 	
-	
-//	TODO: gera as estatísticas da simulação e manda a UI carregar a ultima estatística gerada.
+	/**
+	 * Gera todas as estatísticas da simulação e apresenta na interface gráfica.
+	 */
 	void geraEstatisticas(){
 		gera_estatisticas_a();
 		
 		gera_estatistica_b();
 		
-		janela.tempo_transito_minimo.setText("");
-		janela.tempo_transito_maximo.setText("");
-		janela.tempo_transito_media.setText("");
+		//c
+		if(duracoes.size() > 0){
+			duracao_min = duracoes.first();
+			duracao_max = duracoes.last();
+			duracao_media = 0;
+			for(double duracao : duracoes){
+				duracao_media += duracao;
+			}
+			duracao_media /= duracoes.size();
+		}
+		janela.tempo_transito_minimo.setText(String.valueOf(tres_digitos.format(duracao_min)));
+		janela.tempo_transito_maximo.setText(String.valueOf(tres_digitos.format(duracao_max)));
+		janela.tempo_transito_media.setText(String.valueOf(tres_digitos.format(duracao_media)));
 		
-		janela.mensagens_despachadas.setText("");
+		//d
+		janela.mensagens_despachadas.setText(String.valueOf(total_mensagens_despachadas));
+
+		//e
+		janela.contador_LLS.setText(String.valueOf(total_LLS));
+		janela.contador_LLF.setText(String.valueOf(total_LLF));
+		janela.contador_LLA.setText(String.valueOf(total_LLA));
 		
-		janela.contador_LLS.setText("");
-		janela.contador_LRF.setText("");
-		janela.contador_LRS.setText("");
-		janela.contador_LLA.setText("");
-		janela.contador_LLF.setText("");
-		janela.contador_LRA.setText("");
-		janela.contador_RLS.setText("");
-		janela.contador_RLF.setText("");
-		janela.contador_RLA.setText("");
-		janela.contador_RRS.setText("");
-		janela.contador_RRF.setText("");
-		janela.contador_RRA.setText("");
+		janela.contador_LRS.setText(String.valueOf(total_LRS));
+		janela.contador_LRF.setText(String.valueOf(total_LRF));
+		janela.contador_LRA.setText(String.valueOf(total_LRA));
+		
+		janela.contador_RLS.setText(String.valueOf(total_RLS));
+		janela.contador_RLF.setText(String.valueOf(total_RLF));
+		janela.contador_RLA.setText(String.valueOf(total_RLA));
+		
+		janela.contador_RRS.setText(String.valueOf(total_RRS));
+		janela.contador_RRF.setText(String.valueOf(total_RRF));
+		janela.contador_RRA.setText(String.valueOf(total_RRA));
 	}
 	
 	private void gera_estatistica_b() {
@@ -261,7 +313,10 @@ public class Simulador{
 			
 			index++;
 		}
-		tempos[index] = tempo_simulacao - tempo_anterior;
+		double tnow_aux = TNOW();
+		if(tnow_aux > tempo_simulacao)
+			tnow_aux = tempo_simulacao;
+		tempos[index] = tnow_aux - tempo_anterior;
 		quantidades[index] = quantidade_anterior;
 		
 		for(int i = 0; i < tempos.length; i++){
@@ -309,6 +364,7 @@ public class Simulador{
 				}
 				proximo_evento(iminente);
 			}
+			geraEstatisticas();
 		}
 		geraEstatisticas();
 		esperando_nova_simulacao();

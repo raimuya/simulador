@@ -144,29 +144,34 @@ public class Janela extends JFrame implements ActionListener {
 		panel.add(a_min, constraints);
 		
 		minimo_mensagens = new JLabel("   --   ");
+		constraints.insets = new Insets(5, 0, 5, 30); //tamanho das células
 		constraints.gridx = 1;
 		panel.add(minimo_mensagens, constraints);
 		
 		JLabel a_max = new JLabel("Máximo: ");
+		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
 		constraints.gridx = 2;
 		panel.add(a_max, constraints);
 		
 		maximo_mensagens =  new JLabel("   --   ");
+		constraints.insets = new Insets(5, 0, 5, 30); //tamanho das células
 		constraints.gridx = 3;
 		panel.add(maximo_mensagens, constraints);
 		
 		JLabel a_med = new JLabel("Média: ");
+		constraints.insets = new Insets(5, 5, 5, 5);
 		constraints.gridx = 4;
 		panel.add(a_med, constraints);
 		
 		media_mensagens =  new JLabel("   --   ");
+		constraints.insets = new Insets(5, 0, 5, 30);
 		constraints.gridx = 5;
 		panel.add(media_mensagens, constraints);
 		
 		
 		panel.setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createEtchedBorder(),
-				"Número de Mensagens no Sistema"));
+				"Número de Mensagens no Sistema (por tempo)"));
 
 		return panel;
 	}
@@ -174,22 +179,27 @@ public class Janela extends JFrame implements ActionListener {
 	JPanel estatisticas_b(){
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
 		
+		constraints.insets = new Insets(5, 5, 5, 5);
 		panel.add(new JLabel("Centro Recepção: "));
 		media_RECEPCAO = new JLabel("  --  ");
+		constraints.insets = new Insets(5, 0, 5, 30);
 		constraints.gridx = 1;
 		panel.add(media_RECEPCAO, constraints);
 	
+		constraints.insets = new Insets(5, 5, 5, 5);
 		constraints.gridx = 2;
 		panel.add(new JLabel("Centro C1: "), constraints);
 		media_C1 =  new JLabel("   --   ");
+		constraints.insets = new Insets(5, 0, 5, 30);
 		constraints.gridx = 3;
 		panel.add(media_C1, constraints);
 		
+		constraints.insets = new Insets(5, 5, 5, 5);
 		constraints.gridx = 4;
 		panel.add(new JLabel("Centro C2: "), constraints);
 		media_C2 =  new JLabel("   --   ");
+		constraints.insets = new Insets(5, 0, 5, 30);
 		constraints.gridx = 5;
 		panel.add(media_C2, constraints);
 		
@@ -203,28 +213,30 @@ public class Janela extends JFrame implements ActionListener {
 	JPanel estatisticas_c(){
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
-	
+		
+		constraints.insets = new Insets(5, 5, 5, 5);
 		JLabel c_min = new JLabel("Mínimo: ");
 		panel.add(c_min, constraints);
-		
+		constraints.insets = new Insets(5, 0, 5, 30);
 		tempo_transito_minimo = new JLabel("   --   ");
 		constraints.gridx = 1;
 		panel.add(tempo_transito_minimo, constraints);
 		
 		JLabel c_max = new JLabel("Máximo: ");
+		constraints.insets = new Insets(5, 5, 5, 5);
 		constraints.gridx = 2;
 		panel.add(c_max, constraints);
-		
+		constraints.insets = new Insets(5, 0, 5, 30);
 		tempo_transito_maximo = new JLabel("   --   ");
 		constraints.gridx = 3;
 		panel.add(tempo_transito_maximo, constraints);
 		
 		JLabel c_med = new JLabel("Média: ");
+		constraints.insets = new Insets(5, 5, 5, 5);
 		constraints.gridx = 4;
 		panel.add(c_med, constraints);
-		
 		tempo_transito_media = new JLabel("   --   ");
+		constraints.insets = new Insets(5, 0, 5, 30);
 		constraints.gridx = 5;
 		panel.add(tempo_transito_media, constraints);
 		
@@ -238,7 +250,7 @@ public class Janela extends JFrame implements ActionListener {
 	JPanel estatisticas_d(){
 		JPanel panel = new JPanel(new GridBagLayout());
 
-		JLabel mensagens = new JLabel("Total mensagens: ");
+		JLabel mensagens = new JLabel("Total despachadas (sucesso ou fracasso): ");
 		panel.add(mensagens);
 	
 		mensagens_despachadas = new JLabel("   --   ");

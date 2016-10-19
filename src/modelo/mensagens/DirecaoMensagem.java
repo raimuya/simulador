@@ -8,9 +8,4 @@ public enum DirecaoMensagem {
 	//RL = Remoto -> Local
 	//RR = Remoto -> Remoto
 	LL, RL, LR, RR;
-	
-	//retorna um array contendo as constantes do enum
-	public static DirecaoMensagem[] valores(){
-		return DirecaoMensagem.values();
-	}
 }
