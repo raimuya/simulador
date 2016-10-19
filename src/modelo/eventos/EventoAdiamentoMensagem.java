@@ -42,8 +42,6 @@ public class EventoAdiamentoMensagem extends Evento{
 			break;
 		}
 		
-		m.add_tempo_no_sistema(Simulador.TNOW() - inicio);
-		
 		s.atualiza_area_simulacao("ADIANDO ÀS " + Simulador.TNOW_STRING() + "\n");
 		s.atualiza_area_simulacao(toString() + "\n\n");
 

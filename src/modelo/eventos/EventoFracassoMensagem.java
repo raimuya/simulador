@@ -31,7 +31,6 @@ public class EventoFracassoMensagem extends Evento{
 		
 		fracassos++;
 		
-		m.add_tempo_no_sistema(Simulador.TNOW() - inicio);
 		s.atualiza_qtd_mensagens_sistema(false, true);
 		s.adiciona_duracao_mensagem(m);
 		
@@ -46,6 +45,6 @@ public class EventoFracassoMensagem extends Evento{
 	}
 	
 	public String toStringProcessando() {
-		return "Evento FRACASSO" + m.toString() + "|  Duração: " + m.get_tempo_no_sistema(); 
+		return "Evento FRACASSO" + m.toString() + "|  Duração: " + Simulador.tres_digitos.format(m.get_tempo_no_sistema()); 
 	}
 }

@@ -35,9 +35,53 @@ public class EventoChegadaMensagemC1 extends Evento{ //LOCAL
 			s.atualiza_area_simulacao("PROCESSANDO EM C1 ÀS " + Simulador.TNOW_STRING() + "\n");
 			s.atualiza_area_simulacao(toStringProcessando());
 			
+			double duracao = 0;
 			switch(m.getDirecao()){
-			case LL: processa_ll(s); break;
-			case RL: processa_rl(s); break;
+			case LL: 
+				switch(m.getDesfecho()){
+				case S:
+					duracao = (Distribuicao.norm(0.55, 0.05));
+					m.add_tempo_no_sistema(duracao);
+					Evento lls = new EventoSucessoMensagem(Simulador.TNOW()+duracao, m);
+					Simulador.addEvento(lls);
+					break;
+				case F:
+					duracao = (Distribuicao.tria(0.02, 0.05, 0.12));
+					m.add_tempo_no_sistema(duracao);
+					Evento llf = new EventoFracassoMensagem(Simulador.TNOW()+duracao, m);
+					Simulador.addEvento(llf);
+					break;
+				case A:
+					duracao = (Distribuicao.unif(0.06, 0.15));
+					m.add_tempo_no_sistema(duracao);
+					Evento lla = new EventoAdiamentoMensagem(Simulador.TNOW()+duracao, m);
+					Simulador.addEvento(lla);
+					break;
+				}
+				break;
+			case RL: 
+				switch(m.getDesfecho()){
+				case S:
+					duracao =(Distribuicao.unif(0.3, 0.11));
+					m.add_tempo_no_sistema(duracao);
+					Evento rls = new EventoSucessoMensagem(Simulador.TNOW()+duracao, m);
+					Simulador.addEvento(rls);
+					break;
+				case F:
+					duracao =(Distribuicao.norm(0.46, 0.05));
+					m.add_tempo_no_sistema(duracao);
+					Evento rlf = new EventoSucessoMensagem(Simulador.TNOW()+duracao, m);
+					Simulador.addEvento(rlf);
+					break;
+				case A:
+					duracao = (Distribuicao.norm(0.72, 0.09));
+					m.add_tempo_no_sistema(duracao);
+					Evento rla = new EventoAdiamentoMensagem(Simulador.TNOW()+duracao, m);
+					Simulador.addEvento(rla);
+					break;
+				}
+				
+				break;
 			default: break;
 			}
 		} else{
@@ -46,84 +90,10 @@ public class EventoChegadaMensagemC1 extends Evento{ //LOCAL
 			}
 			s.add_fila_local(this);
 		}
-		m.add_tempo_no_sistema(Simulador.TNOW() - inicio);
 		s.serv_livre_local++;
 		s.atualiza_ocupacao_C1_NOW();
 	}
 
-	void processa_ll(Simulador s) {
-		double duracao = 0;
-		int pos = 0;
-		switch(m.getDesfecho()){
-		case S:
-			duracao = (Distribuicao.norm(0.55, 0.05));
-			m.add_tempo_no_sistema(duracao);
-			Evento lls = new EventoSucessoMensagem(Simulador.TNOW()+duracao, m);
-			pos = Simulador.addEvento(lls);
-			
-//			s.atualiza_area_simulacao("\n\nEVENTO CRIADO ÀS " + Simulador.TNOW_STRING() + "\n");
-//			s.atualiza_area_simulacao(lls.toString());
-//			s.atualiza_area_simulacao("\nAdicionado na posicao LEF: " + pos + "\n\n");
-			break;
-		case F:
-			duracao = (Distribuicao.tria(0.02, 0.05, 0.12));
-			m.add_tempo_no_sistema(duracao);
-			Evento llf = new EventoFracassoMensagem(Simulador.TNOW()+duracao, m);
-			pos = Simulador.addEvento(llf);
-			
-//			s.atualiza_area_simulacao("\n\nEVENTO CRIADO ÀS " + Simulador.TNOW_STRING() + "\n");
-//			s.atualiza_area_simulacao(llf.toString());
-//			s.atualiza_area_simulacao("\nAdicionado na posicao LEF: " + pos + "\n\n");
-			break;
-		case A:
-			duracao = (Distribuicao.unif(0.06, 0.15));
-			m.add_tempo_no_sistema(duracao);
-			Evento lla = new EventoAdiamentoMensagem(Simulador.TNOW()+duracao, m);
-			pos = Simulador.addEvento(lla);
-			
-//			s.atualiza_area_simulacao("\n\nEVENTO CRIADO ÀS " + Simulador.TNOW_STRING() + "\n");
-//			s.atualiza_area_simulacao(lla.toString());
-//			s.atualiza_area_simulacao("\nAdicionado na posicao LEF: " + pos + "\n\n");
-			break;
-		}
-	}
-	
-	void processa_rl(Simulador s) {
-		double duracao = 0;
-		int pos = 0;
-		switch(m.getDesfecho()){
-		case S:
-			duracao =(Distribuicao.unif(0.3, 0.11));
-			m.add_tempo_no_sistema(duracao);
-			Evento rls = new EventoSucessoMensagem(Simulador.TNOW()+duracao, m);
-			pos = Simulador.addEvento(rls);
-			
-//			s.atualiza_area_simulacao("\n\nEVENTO CRIADO ÀS " + Simulador.TNOW_STRING() + "\n");
-//			s.atualiza_area_simulacao(rls.toString());
-//			s.atualiza_area_simulacao("\nAdicionado na posicao LEF: " + pos + "\n\n");
-			break;
-		case F:
-			duracao =(Distribuicao.norm(0.46, 0.05));
-			m.add_tempo_no_sistema(duracao);
-			Evento rlf = new EventoSucessoMensagem(Simulador.TNOW()+duracao, m);
-			pos = Simulador.addEvento(rlf);
-
-//			s.atualiza_area_simulacao("\n\nEVENTO CRIADO ÀS " + Simulador.TNOW_STRING() + "\n");
-//			s.atualiza_area_simulacao(rlf.toString());
-//			s.atualiza_area_simulacao("\nAdicionado na posicao LEF: " + pos + "\n\n");
-			break;
-		case A:
-			duracao = (Distribuicao.norm(0.72, 0.09));
-			m.add_tempo_no_sistema(duracao);
-			Evento rla = new EventoAdiamentoMensagem(Simulador.TNOW()+duracao, m);
-			pos = Simulador.addEvento(rla);
-			
-//			s.atualiza_area_simulacao("\n\nEVENTO CRIADO ÀS " + Simulador.TNOW_STRING() + "\n");
-//			s.atualiza_area_simulacao(rla.toString());
-//			s.atualiza_area_simulacao("\nAdicionado na posicao LEF: " + pos + "\n\n");
-			break;
-		}
-	}
 
 	@Override
 	public String toString() {

@@ -31,7 +31,6 @@ public class EventoSucessoMensagem extends Evento {
 		
 		sucessos++;
 		
-		m.add_tempo_no_sistema(Simulador.TNOW() - inicio);
 		s.atualiza_qtd_mensagens_sistema(false, true);
 		s.adiciona_duracao_mensagem(m);
 		
@@ -46,7 +45,7 @@ public class EventoSucessoMensagem extends Evento {
 	}
 	
 	public String toStringProcessando() {
-		return "Evento SUCESSO" + m.toString() + "|  Duração: " + m.get_tempo_no_sistema(); 
+		return "Evento SUCESSO" + m.toString() + "|  Duração: " + Simulador.tres_digitos.format(m.get_tempo_no_sistema()); 
 	}
 	
 

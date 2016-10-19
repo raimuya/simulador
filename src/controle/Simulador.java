@@ -20,7 +20,7 @@ import visao.Janela;
 public class Simulador{
 	
 	Janela janela;
-	static DecimalFormat tres_digitos = new DecimalFormat("#######.###");
+	public static DecimalFormat tres_digitos = new DecimalFormat("#######.###");
 	
 	Queue<Evento> fila_recepcao;
 	public int serv_livre_recepcao; //servidores livres
