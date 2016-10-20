@@ -1,6 +1,7 @@
 package modelo.eventos;
 
 import controle.Simulador;
+import modelo.mensagens.DirecaoMensagem;
 import modelo.mensagens.Mensagem;
 
 public class EventoAdiamentoMensagem extends Evento{
@@ -29,6 +30,13 @@ public class EventoAdiamentoMensagem extends Evento{
 	 * 
 	 */
 	public void processa_evento(Simulador s){
+		if(m.getDirecao() == DirecaoMensagem.LL | m.getDirecao() == DirecaoMensagem.RL){
+			s.atualiza_ocupacao_C1_NOW(false, true);
+		}
+		if(m.getDirecao() == DirecaoMensagem.LR | m.getDirecao() == DirecaoMensagem.RR){
+			s.atualiza_ocupacao_C2_NOW(false, true);
+		}
+		
 		adiadas++;
 		
 		switch(m.getDirecao()){
@@ -56,7 +64,7 @@ public class EventoAdiamentoMensagem extends Evento{
 
 	@Override
 	public String toString() {
-		return "Evento ADIAMENTO " + m.toString();
+		return m.toString();
 	}
 
 

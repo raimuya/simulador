@@ -23,15 +23,15 @@ public class Simulador{
 	public static DecimalFormat tres_digitos = new DecimalFormat("#######.###");
 	
 	Queue<Evento> fila_recepcao;
-	public int serv_livre_recepcao; //servidores livres
+	public int serv_ocupado_recepcao; //servidores ocupado
 	public int serv_total_recepcao; //numero total de servidores
 	
 	Queue<Evento> fila_destino_local;
-	public int serv_livre_local; //servidores livres
+	public int serv_ocupado_local; //servidores ocupado
 	public int serv_total_local; //numero total de servidores
 	
 	Queue<Evento> fila_destino_remoto;
-	public int serv_livre_remoto; //servidores livres
+	public int serv_ocupado_remoto; //servidores ocupado
 	public int serv_total_remoto; //numero total de servidores
 	
 	static ListaEventos listaEventos;
@@ -141,25 +141,50 @@ public class Simulador{
 		fila_recepcao.add(e);
 	}
 	
-	public void atualiza_ocupacao_C2_NOW(double tempo){
-		int ocupados = serv_total_remoto - serv_livre_remoto;
-		ocupacaoXtempo_C2.put(tempo, ocupados);
-		
-		System.out.println("C2 ocupados: " + ocupados + " às " + tempo);
+	public void atualiza_ocupacao_C2_NOW(boolean entrando, boolean saindo){
+		//se está somente entrando uma mensagem no sistema
+		if(entrando){
+			serv_ocupado_remoto++;
+			ocupacaoXtempo_C2.put(TNOW(), serv_ocupado_remoto);
+		}
+		//se está somente saindo uma mensagem no sistema
+		if(saindo){
+			serv_ocupado_remoto--;
+			ocupacaoXtempo_C2.put(TNOW(), serv_ocupado_remoto);
+		}
+//		System.out.println("C2 ocupados: " + serv_ocupado_remoto + " às " + TNOW());
 	}
 	
-	public void atualiza_ocupacao_recepcao_NOW(double tempo){
-		int ocupados = serv_total_recepcao - serv_livre_recepcao;
-		ocupacaoXtempo_recepcao.put(tempo, ocupados);
-		
-		System.out.println("RECEP ocupados: " + ocupados + " às " + tempo);
+	public void atualiza_ocupacao_recepcao_NOW(boolean entrando, boolean saindo){
+		//se está somente entrando uma mensagem no sistema
+		if(entrando){
+			if(TNOW()>0.0) {
+				serv_ocupado_recepcao++;
+				ocupacaoXtempo_recepcao.put(TNOW(), serv_ocupado_recepcao);
+			}
+		}
+		//se está somente saindo uma mensagem no sistema
+		if(saindo){
+			if(TNOW()>0.0) {
+				serv_ocupado_recepcao--;
+			ocupacaoXtempo_recepcao.put(TNOW(), serv_ocupado_recepcao);
+			}
+		}
+//		System.out.println("RECEP ocupados: " + serv_ocupado_recepcao + " às " + TNOW());
 	}
 	
-	public void atualiza_ocupacao_C1_NOW(double tempo){
-		int ocupados = serv_total_local - serv_livre_local;
-		ocupacaoXtempo_C1.put(tempo, ocupados);
+	public void atualiza_ocupacao_C1_NOW(boolean entrando, boolean saindo){
+		if(entrando){
+			serv_ocupado_local++;
+			ocupacaoXtempo_C1.put(TNOW(), serv_ocupado_local);
+		}
+		//se está somente saindo uma mensagem no sistema
+		if(saindo){
+			serv_ocupado_local--;
+			ocupacaoXtempo_C1.put(TNOW(), serv_ocupado_local);
+		}
 		
-		System.out.println("C1 ocupados: " + ocupados + " às " + tempo);
+//		System.out.println("C1 ocupados: " + ocupados + " às " + tempo);
 	}
 	
 	public Evento proximo_fila_recepcao(){
@@ -169,11 +194,13 @@ public class Simulador{
 	void gerador_init(){
 		g = new Gerador(
 				(double) janela.spinner_ll.getValue(), (double) janela.spinner_lr.getValue(),
-				(double) janela.spinner_lr.getValue(), (double) janela.spinner_rr.getValue(),
+				(double) janela.spinner_rl.getValue(), (double) janela.spinner_rr.getValue(),
+				
 				(double) janela.spinner_lls.getValue(), (double) janela.spinner_llf.getValue(), (double) janela.spinner_lla.getValue(),
 				(double) janela.spinner_lrs.getValue(), (double) janela.spinner_lrf.getValue(), (double) janela.spinner_lra.getValue(),
 				(double) janela.spinner_rls.getValue(), (double) janela.spinner_rlf.getValue(), (double) janela.spinner_rla.getValue(),
 				(double) janela.spinner_rrs.getValue(), (double) janela.spinner_rrf.getValue(), (double) janela.spinner_rra.getValue(),
+				
 				(double) janela.spinner_tec_local.getValue(), (double) janela.spinner_tec_remota.getValue());
 	}
 	
@@ -262,8 +289,18 @@ public class Simulador{
 	}
 	
 	private void gera_estatistica_b() {
-//		double media_recp = calcula_ponderada(ocupacaoXtempo_recepcao);
-		int size = ocupacaoXtempo_recepcao.size() + 1;
+		double media_recp = calcula_ponderada_centro(ocupacaoXtempo_recepcao);
+		janela.media_RECEPCAO.setText(tres_digitos.format(media_recp));
+		
+		double media_c1 = calcula_ponderada(ocupacaoXtempo_C1);
+		janela.media_C1.setText(tres_digitos.format(media_c1));
+		
+		double media_c2 = calcula_ponderada(ocupacaoXtempo_C2);
+		janela.media_C2.setText(tres_digitos.format(media_c2));
+	
+}
+	double calcula_ponderada_centro(Map<Double, Integer> map){
+		int size = map.size() + 1;
 		Double[] tempos = new Double[size];
 		Integer[] quantidades = new Integer[size];
 
@@ -271,8 +308,8 @@ public class Simulador{
 		Integer quantidade_anterior = 0;
 				
 		int index = 0;
-		double media = 0.0;
-		for(Map.Entry<Double, Integer> entrada : ocupacaoXtempo_recepcao.entrySet()){
+		double media = 0;
+		for(Map.Entry<Double, Integer> entrada : map.entrySet()){
 			tempos[index] = entrada.getKey() - tempo_anterior;
 			quantidades[index] = quantidade_anterior;
 			
@@ -289,20 +326,13 @@ public class Simulador{
 		
 		for(int i = 0; i < tempos.length; i++){
 			media += tempos[i] * quantidades[i];
-//			System.out.println(tempos[i]);
-//			System.out.println(quantidades[i]);
+			System.out.println("tempo " + tempos[i]);
+			System.out.println("quantidades " + quantidades[i]);
 		}
-		
-		
-		janela.media_RECEPCAO.setText(tres_digitos.format(media));
-		
-		
-		double media_c1 = calcula_ponderada(ocupacaoXtempo_C1);
-		janela.media_C1.setText(tres_digitos.format(media_c1));
-		double media_c2 = calcula_ponderada(ocupacaoXtempo_C2);
-		janela.media_C2.setText(tres_digitos.format(media_c2));
+		return media;
+	}
+
 	
-}
 	double calcula_ponderada(Map<Double, Integer> map){
 		int size = map.size() + 1;
 		Double[] tempos = new Double[size];
@@ -365,8 +395,8 @@ public class Simulador{
 		
 		while(TNOW() < tempo_simulacao){
 			System.out.println(" "); //sem o print n funfa?
-			TimeUnit.SECONDS.sleep((long) (TNOW().longValue()+0.01));
-			if(janela.pausar.isEnabled()){
+			TimeUnit.SECONDS.sleep((long) (0.0000001));
+			if(janela.pausar.isEnabled() && janela.parar.isEnabled()){
 				Evento iminente = avanco_tempo();
 				if(TNOW() >= tempo_simulacao){
 					break;
@@ -382,20 +412,24 @@ public class Simulador{
 	private void filas_init() {
 		fila_recepcao = new LinkedList<Evento>();
 		serv_total_recepcao = (int) janela.spinner_servidor_recepcao.getValue();
-		serv_livre_recepcao = serv_total_recepcao;
+		serv_ocupado_recepcao = 0;
 		
 		fila_destino_local = new LinkedList<Evento>();
 		serv_total_local = (int) janela.spinner_servidor_C1.getValue();
-		serv_livre_local = serv_total_local;
+		serv_ocupado_local = 0;
 		
 		fila_destino_remoto = new LinkedList<Evento>();
 		serv_total_remoto = (int) janela.spinner_servidor_C2.getValue();
-		serv_livre_remoto = serv_total_remoto;
+		serv_ocupado_remoto = 0;
 	}
 
 	public void esperando_nova_simulacao() throws InterruptedException{
 		janela.pausar.setEnabled(false);
 		janela.iniciar.setEnabled(true);
+		if(!janela.parar.isEnabled())
+			limpa_area_simulacao();
+		janela.parar.setEnabled(false);
+		
 		
 		listaEventos = new ListaEventos();
 		
@@ -404,7 +438,6 @@ public class Simulador{
 		}
 		iniciar();
 	}
-	
 	
 	Evento avanco_tempo(){
 		//remova o evento iminente da LEF
@@ -456,5 +489,4 @@ public class Simulador{
 	public Queue<Evento> get_fila_remoto() {
 		return fila_destino_remoto;
 	}
-	
 }

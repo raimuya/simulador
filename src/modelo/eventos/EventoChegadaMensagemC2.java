@@ -28,9 +28,10 @@ public class EventoChegadaMensagemC2 extends Evento{ //REMOTO
 		//se tem servidor livre então
 		//gerar tempo servico = processa_XR
 		//programar proxima saida = dentro do sucesso/fracasso/adiamento
-		if(s.serv_livre_remoto > 0){
-			s.serv_livre_remoto--;
-			s.atualiza_ocupacao_C2_NOW(Simulador.TNOW());
+		s.atualiza_ocupacao_recepcao_NOW(false, true);
+		
+		if(s.serv_ocupado_remoto < s.serv_total_remoto){
+			s.atualiza_ocupacao_C2_NOW(true, false);
 			
 			s.atualiza_area_simulacao("PROCESSANDO EM C2 ÀS " + Simulador.TNOW_STRING() + "\n");
 			s.atualiza_area_simulacao(toStringProcessando());
@@ -84,8 +85,6 @@ public class EventoChegadaMensagemC2 extends Evento{ //REMOTO
 				break;
 			default:
 			}
-			s.serv_livre_remoto++;
-			s.atualiza_ocupacao_C2_NOW(Simulador.TNOW()+duracao);
 		}
 		else{
 			for(Evento e : s.get_fila_remoto()){
@@ -97,12 +96,12 @@ public class EventoChegadaMensagemC2 extends Evento{ //REMOTO
 	
 	@Override
 	public String toString() {
-		return "Evento C2 " + m.toString() + 
+		return m.toString() + 
 				"\nInicia em: " + get_inicio_STRING();
 	}
 	
 	public String toStringProcessando() {
-		return "Evento C2 " + m.toString() + "\n\n"; 
+		return m.toString() + "\n\n"; 
 	}
 	
 }

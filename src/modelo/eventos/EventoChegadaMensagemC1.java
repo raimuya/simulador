@@ -28,9 +28,12 @@ public class EventoChegadaMensagemC1 extends Evento{ //LOCAL
 		//se tem servidor livre então
 		//gerar tempo servico = processa_XL
 		//programar proxima saida = dentro do sucesso/fracasso/adiamento
-		if(s.serv_livre_local > 0){
-			s.serv_livre_local--;
-			s.atualiza_ocupacao_C1_NOW(Simulador.TNOW());
+		
+		s.atualiza_ocupacao_recepcao_NOW(false, true);
+		
+		if(s.serv_ocupado_local < s.serv_total_local){
+			s.serv_ocupado_local--;
+			s.atualiza_ocupacao_C1_NOW(true, false);
 			
 			s.atualiza_area_simulacao("PROCESSANDO EM C1 ÀS " + Simulador.TNOW_STRING() + "\n");
 			s.atualiza_area_simulacao(toStringProcessando());
@@ -84,8 +87,6 @@ public class EventoChegadaMensagemC1 extends Evento{ //LOCAL
 				break;
 			default: break;
 			}
-			s.serv_livre_local++;
-			s.atualiza_ocupacao_C1_NOW(Simulador.TNOW()+duracao);
 		} else{
 			for(Evento e : s.get_fila_local()){
 				this.inicio += e.get_inicio();
@@ -97,11 +98,11 @@ public class EventoChegadaMensagemC1 extends Evento{ //LOCAL
 
 	@Override
 	public String toString() {
-		return "Evento C1 " + m.toString() + 
+		return  m.toString() + 
 				"\nInicia em: " + get_inicio_STRING();
 	}
 	
 	public String toStringProcessando() {
-		return "Evento C1 " + m.toString() + "\n\n";
+		return m.toString() + "\n\n";
 	}
 }

@@ -25,9 +25,8 @@ public class EventoChegadaMensagem extends Evento{
 		s.atualiza_qtd_mensagens_sistema(true, false);
 		
 		double duracao = 0;
-		if(s.serv_livre_recepcao > 0){
-			s.serv_livre_recepcao--;
-			s.atualiza_ocupacao_recepcao_NOW(Simulador.TNOW());
+		if(s.serv_ocupado_recepcao < s.serv_total_recepcao){
+			s.atualiza_ocupacao_recepcao_NOW(true, false);
 			
 			s.atualiza_area_simulacao("PROCESSANDO NA RECEPÇÃO ÀS " + Simulador.TNOW_STRING() + "\n");
 			s.atualiza_area_simulacao(toStringProcessando());
@@ -89,8 +88,6 @@ public class EventoChegadaMensagem extends Evento{
 			s.atualiza_area_simulacao("\nAdicionado na posicao LEF: " + pos + "\n\n");
 			break;
 		}
-		s.serv_livre_recepcao++;
-		s.atualiza_ocupacao_recepcao_NOW(Simulador.TNOW()+duracao);
 	} else{
 		for(Evento e : s.get_fila_recepcao()){
 			this.inicio += e.get_inicio();
@@ -106,6 +103,6 @@ public class EventoChegadaMensagem extends Evento{
 	}
 	
 	public String toStringProcessando(){
-		return "Evento CHEGADA " + m.toString() + "\n\n";
+		return "CHEGADA " + m.toString() + "\n\n";
 	}
 }

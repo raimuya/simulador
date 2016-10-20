@@ -43,7 +43,7 @@ public class Janela extends JFrame implements ActionListener {
 	public JSpinner spinner_servidor_recepcao, spinner_servidor_C1, spinner_servidor_C2;
 	
 	//controle simulacao
-	public JButton iniciar, pausar, continuar;
+	public JButton iniciar, pausar, continuar, parar;
 	
 	//area simulacao
 	public JTextArea area_texto_campo_simulacao;
@@ -75,7 +75,7 @@ public class Janela extends JFrame implements ActionListener {
 		panel.setLayout(new GridBagLayout()); //para ficar expandido na horizontal
 		GridBagConstraints constraints = new GridBagConstraints();
 		
-		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
+		constraints.insets = new Insets(3, 3, 3, 3); //tamanho das células
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.anchor = GridBagConstraints.FIRST_LINE_END;
 		panel.add(variaveis_simulacao(), constraints);
@@ -91,6 +91,7 @@ public class Janela extends JFrame implements ActionListener {
 		panel.add(estatiscas_simulacao(), constraints);
 		
 		add(panel);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		pack(); //tamanho da tela p/ as coisas aparecer
 		setLocationRelativeTo(null); //aparece no meio a janela
 		setVisible(true);
@@ -150,22 +151,24 @@ public class Janela extends JFrame implements ActionListener {
 		
 		JLabel a_max = new JLabel("Máximo: ");
 		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
-		constraints.gridx = 2;
+		constraints.gridx = 0;
+		constraints.gridy = 1;
 		panel.add(a_max, constraints);
 		
 		maximo_mensagens =  new JLabel("   --   ");
 		constraints.insets = new Insets(5, 0, 5, 30); //tamanho das células
-		constraints.gridx = 3;
+		constraints.gridx = 1;
 		panel.add(maximo_mensagens, constraints);
 		
 		JLabel a_med = new JLabel("Média: ");
+		constraints.gridx = 0;
+		constraints.gridy = 2;
 		constraints.insets = new Insets(5, 5, 5, 5);
-		constraints.gridx = 4;
 		panel.add(a_med, constraints);
 		
 		media_mensagens =  new JLabel("   --   ");
 		constraints.insets = new Insets(5, 0, 5, 30);
-		constraints.gridx = 5;
+		constraints.gridx = 1;
 		panel.add(media_mensagens, constraints);
 		
 		
@@ -214,29 +217,29 @@ public class Janela extends JFrame implements ActionListener {
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 		
-		constraints.insets = new Insets(5, 5, 5, 5);
+		constraints.insets = new Insets(2, 2, 2, 2);
 		JLabel c_min = new JLabel("Mínimo: ");
 		panel.add(c_min, constraints);
-		constraints.insets = new Insets(5, 0, 5, 30);
+		constraints.insets = new Insets(2, 0, 2, 30);
 		tempo_transito_minimo = new JLabel("   --   ");
 		constraints.gridx = 1;
 		panel.add(tempo_transito_minimo, constraints);
 		
 		JLabel c_max = new JLabel("Máximo: ");
-		constraints.insets = new Insets(5, 5, 5, 5);
+		constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.gridx = 2;
 		panel.add(c_max, constraints);
-		constraints.insets = new Insets(5, 0, 5, 30);
+		constraints.insets = new Insets(2, 0, 2, 30);
 		tempo_transito_maximo = new JLabel("   --   ");
 		constraints.gridx = 3;
 		panel.add(tempo_transito_maximo, constraints);
 		
 		JLabel c_med = new JLabel("Média: ");
-		constraints.insets = new Insets(5, 5, 5, 5);
+		constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.gridx = 4;
 		panel.add(c_med, constraints);
 		tempo_transito_media = new JLabel("   --   ");
-		constraints.insets = new Insets(5, 0, 5, 30);
+		constraints.insets = new Insets(2, 0, 2, 30);
 		constraints.gridx = 5;
 		panel.add(tempo_transito_media, constraints);
 		
@@ -266,7 +269,7 @@ public class Janela extends JFrame implements ActionListener {
 	JPanel estatisticas_e(){
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
+		constraints.insets = new Insets(2, 2, 2, 2); //tamanho das células
 		
 		JLabel lls = new JLabel("Contador LLS: ");
 		panel.add(lls);
@@ -379,25 +382,30 @@ public class Janela extends JFrame implements ActionListener {
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
 		
-		iniciar = new JButton("      Iniciar     ");
+		iniciar = new JButton("Iniciar");
 		iniciar.addActionListener(this);
-		pausar = new JButton("     Pausar     ");
+		pausar = new JButton(" Pausar ");
 		pausar.addActionListener(this);
 		pausar.setEnabled(false);
-		continuar = new JButton("  Continuar  ");
+		continuar = new JButton("Continuar");
 		continuar.addActionListener(this);
 		continuar.setEnabled(false);
+		
+		parar = new JButton(" Parar ");
+		parar.addActionListener(this);
+		parar.setEnabled(false);
 		
 		panel.add(iniciar, constraints);
 		panel.add(pausar, constraints);
 		panel.add(continuar, constraints);
+		panel.add(parar, constraints);
 		
-		area_texto_campo_simulacao = new JTextArea(27, 30);
+		area_texto_campo_simulacao = new JTextArea(28, 31);
 		area_texto_campo_simulacao.setEditable(false);
 		scroll_area_texto_simulacao = new JScrollPane(area_texto_campo_simulacao);
 		constraints.gridx = 0;
 		constraints.gridy = 1;
-	    constraints.gridwidth = 3;
+	    constraints.gridwidth = 4; //
 	    panel.add(scroll_area_texto_simulacao, constraints);
 		
 		panel.setBorder(BorderFactory.createTitledBorder(
@@ -415,13 +423,16 @@ public class Janela extends JFrame implements ActionListener {
 		panel.add(variaveis_origem());
 		panel.add(variaveis_gerais());
 		
+		panel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(), "Variáveis de simulação"));
+		
 		return panel;
 	}
 	
 	JPanel variaveis_gerais(){
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.insets = new Insets(5, 5, 5, 5); //tamanho das células
+		constraints.insets = new Insets(1, 1, 1, 1); //tamanho das células
 		
 		panel.add(new JLabel("Tempo de simulacao (seg.): "), constraints);
 		
@@ -702,16 +713,25 @@ public class Janela extends JFrame implements ActionListener {
 			iniciar.setEnabled(false);
 			pausar.setEnabled(true);
 			continuar.setEnabled(false);
+			parar.setEnabled(true);
 		}
 		if(e.getSource().equals(pausar)){
 			iniciar.setEnabled(false);
 			pausar.setEnabled(false);
 			continuar.setEnabled(true);
+			parar.setEnabled(true);
 		}
 		if(e.getSource().equals(continuar)){
 			iniciar.setEnabled(false);
 			pausar.setEnabled(true);
 			continuar.setEnabled(false);
+			parar.setEnabled(true);
+		}
+		if(e.getSource().equals(parar)){
+			iniciar.setEnabled(true);
+			pausar.setEnabled(false);
+			continuar.setEnabled(false);
+			parar.setEnabled(false);
 		}
 		
 	}

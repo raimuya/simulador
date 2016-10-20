@@ -93,7 +93,7 @@ public class Gerador {
 			dir = DirecaoMensagem.LL;
 		 else if(prop_dir < LR)
 			dir = DirecaoMensagem.LR;
-		 else if (prop_dir > RL)
+		 else if (prop_dir < RL)
 			dir = DirecaoMensagem.RL;
 		 else 
 			dir = DirecaoMensagem.RR;

@@ -71,7 +71,7 @@ public class Mensagem {
 	 * Transforma o objeto mensagem para uma string entendível.
 	 */
 	public String toString(){
-		return "| " + conteudo + " | Tipo: " + direcao + desfecho;
+		return conteudo + " | " + direcao + desfecho;
 	}
 	
 }
