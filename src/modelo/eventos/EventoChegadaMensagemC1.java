@@ -30,12 +30,12 @@ public class EventoChegadaMensagemC1 extends Evento{ //LOCAL
 		//programar proxima saida = dentro do sucesso/fracasso/adiamento
 		if(s.serv_livre_local > 0){
 			s.serv_livre_local--;
-			s.atualiza_ocupacao_C1_NOW();
+			s.atualiza_ocupacao_C1_NOW(Simulador.TNOW());
 			
 			s.atualiza_area_simulacao("PROCESSANDO EM C1 ÀS " + Simulador.TNOW_STRING() + "\n");
 			s.atualiza_area_simulacao(toStringProcessando());
 			
-			double duracao = 0;
+			double duracao = 0;			
 			switch(m.getDirecao()){
 			case LL: 
 				switch(m.getDesfecho()){
@@ -84,14 +84,14 @@ public class EventoChegadaMensagemC1 extends Evento{ //LOCAL
 				break;
 			default: break;
 			}
+			s.serv_livre_local++;
+			s.atualiza_ocupacao_C1_NOW(Simulador.TNOW()+duracao);
 		} else{
 			for(Evento e : s.get_fila_local()){
 				this.inicio += e.get_inicio();
 			}
 			s.add_fila_local(this);
 		}
-		s.serv_livre_local++;
-		s.atualiza_ocupacao_C1_NOW();
 	}
 
 

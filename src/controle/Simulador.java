@@ -141,20 +141,25 @@ public class Simulador{
 		fila_recepcao.add(e);
 	}
 	
-	public void atualiza_ocupacao_C2_NOW(){
+	public void atualiza_ocupacao_C2_NOW(double tempo){
 		int ocupados = serv_total_remoto - serv_livre_remoto;
-		ocupacaoXtempo_C2.put(TNOW(), ocupados);
+		ocupacaoXtempo_C2.put(tempo, ocupados);
+		
+		System.out.println("C2 ocupados: " + ocupados + " às " + tempo);
 	}
 	
-	public void atualiza_ocupacao_recepcao_NOW(){
+	public void atualiza_ocupacao_recepcao_NOW(double tempo){
 		int ocupados = serv_total_recepcao - serv_livre_recepcao;
-		System.out.println("ocupados: " + ocupados + " às " + TNOW_STRING());
-		ocupacaoXtempo_recepcao.put(TNOW(), ocupados);
+		ocupacaoXtempo_recepcao.put(tempo, ocupados);
+		
+		System.out.println("RECEP ocupados: " + ocupados + " às " + tempo);
 	}
 	
-	public void atualiza_ocupacao_C1_NOW(){
+	public void atualiza_ocupacao_C1_NOW(double tempo){
 		int ocupados = serv_total_local - serv_livre_local;
-		ocupacaoXtempo_C1.put(TNOW(), ocupados);
+		ocupacaoXtempo_C1.put(tempo, ocupados);
+		
+		System.out.println("C1 ocupados: " + ocupados + " às " + tempo);
 	}
 	
 	public Evento proximo_fila_recepcao(){
@@ -258,7 +263,6 @@ public class Simulador{
 	
 	private void gera_estatistica_b() {
 //		double media_recp = calcula_ponderada(ocupacaoXtempo_recepcao);
-		
 		int size = ocupacaoXtempo_recepcao.size() + 1;
 		Double[] tempos = new Double[size];
 		Integer[] quantidades = new Integer[size];
@@ -267,7 +271,7 @@ public class Simulador{
 		Integer quantidade_anterior = 0;
 				
 		int index = 0;
-		double media = 0;
+		double media = 0.0;
 		for(Map.Entry<Double, Integer> entrada : ocupacaoXtempo_recepcao.entrySet()){
 			tempos[index] = entrada.getKey() - tempo_anterior;
 			quantidades[index] = quantidade_anterior;
@@ -277,17 +281,22 @@ public class Simulador{
 			
 			index++;
 		}
-		tempos[index] = tempo_simulacao - tempo_anterior;
+		double tnow_aux = TNOW();
+		if(tnow_aux > tempo_simulacao)
+			tnow_aux = tempo_simulacao;
+		tempos[index] = tnow_aux - tempo_anterior;
 		quantidades[index] = quantidade_anterior;
 		
 		for(int i = 0; i < tempos.length; i++){
 			media += tempos[i] * quantidades[i];
-			System.out.println(tempos[i]);
-			System.out.println(quantidades[i]);
+//			System.out.println(tempos[i]);
+//			System.out.println(quantidades[i]);
 		}
 		
 		
 		janela.media_RECEPCAO.setText(tres_digitos.format(media));
+		
+		
 		double media_c1 = calcula_ponderada(ocupacaoXtempo_C1);
 		janela.media_C1.setText(tres_digitos.format(media_c1));
 		double media_c2 = calcula_ponderada(ocupacaoXtempo_C2);

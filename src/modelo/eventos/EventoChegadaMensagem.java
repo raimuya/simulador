@@ -27,7 +27,7 @@ public class EventoChegadaMensagem extends Evento{
 		double duracao = 0;
 		if(s.serv_livre_recepcao > 0){
 			s.serv_livre_recepcao--;
-			s.atualiza_ocupacao_recepcao_NOW();
+			s.atualiza_ocupacao_recepcao_NOW(Simulador.TNOW());
 			
 			s.atualiza_area_simulacao("PROCESSANDO NA RECEPÇÃO ÀS " + Simulador.TNOW_STRING() + "\n");
 			s.atualiza_area_simulacao(toStringProcessando());
@@ -89,14 +89,14 @@ public class EventoChegadaMensagem extends Evento{
 			s.atualiza_area_simulacao("\nAdicionado na posicao LEF: " + pos + "\n\n");
 			break;
 		}
+		s.serv_livre_recepcao++;
+		s.atualiza_ocupacao_recepcao_NOW(Simulador.TNOW()+duracao);
 	} else{
 		for(Evento e : s.get_fila_recepcao()){
 			this.inicio += e.get_inicio();
 		}
 		s.add_fila_recepcao(this);
-	}
-		s.serv_livre_recepcao++;
-		s.atualiza_ocupacao_recepcao_NOW();
+		}
 	}
 
 	@Override

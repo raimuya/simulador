@@ -30,7 +30,8 @@ public class EventoChegadaMensagemC2 extends Evento{ //REMOTO
 		//programar proxima saida = dentro do sucesso/fracasso/adiamento
 		if(s.serv_livre_remoto > 0){
 			s.serv_livre_remoto--;
-			s.atualiza_ocupacao_C2_NOW();
+			s.atualiza_ocupacao_C2_NOW(Simulador.TNOW());
+			
 			s.atualiza_area_simulacao("PROCESSANDO EM C2 ÀS " + Simulador.TNOW_STRING() + "\n");
 			s.atualiza_area_simulacao(toStringProcessando());
 			
@@ -83,6 +84,8 @@ public class EventoChegadaMensagemC2 extends Evento{ //REMOTO
 				break;
 			default:
 			}
+			s.serv_livre_remoto++;
+			s.atualiza_ocupacao_C2_NOW(Simulador.TNOW()+duracao);
 		}
 		else{
 			for(Evento e : s.get_fila_remoto()){
@@ -90,8 +93,6 @@ public class EventoChegadaMensagemC2 extends Evento{ //REMOTO
 			}
 			s.add_fila_remoto(this);
 		}
-		s.serv_livre_remoto++;
-		s.atualiza_ocupacao_C2_NOW();
 	}
 	
 	@Override
